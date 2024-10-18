@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { QuizQuestion } from "@/app/types/quiz-question";
+import { QuizQuestion } from "@/types/quiz-question";
 
 interface QuizOutputContextValue {
   output: QuizQuestion[];

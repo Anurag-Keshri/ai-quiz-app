@@ -2,7 +2,7 @@
 
 import InputSection from "./input-section";
 import OutputSection from "./output-section";
-import { QuizOutputProvider } from "@/app/context/quiz-output";
+import { QuizOutputProvider } from "@/context/quiz-output";
 
 export default function MainSection() {
 

@@ -3,7 +3,7 @@
 import Settings from "./settings";
 import Prompt from "./topic";
 import { Button } from "@/components/ui/button";
-import { quizFormAction } from "@/app/server-actions/quiz-form";
+import { quizFormAction } from "@/server-actions/quiz-form";
 import { useState } from "react";	
 
 async function handleSubmit(formData: FormData) {
