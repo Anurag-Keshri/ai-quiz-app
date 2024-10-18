@@ -1,6 +1,6 @@
-import Aside from "./home/aside";
-import Header from "./home/header";
-import Main from "./home/main";
+import Main from "./main";
+import Header from "./header";
+import Aside from "./aside";
 
 export default function Dashboard() {
   return (
