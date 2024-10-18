@@ -16,7 +16,7 @@ export default function Prompt() {
         <Textarea
           id="content"
 					name="topic"
-          placeholder="You are a..."
+          placeholder="HTML"
           className="min-h-[9.5rem]"
         />
       </div>

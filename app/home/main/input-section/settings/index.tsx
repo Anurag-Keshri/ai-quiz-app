@@ -14,7 +14,7 @@ function Model() {
   return (
     <div className="grid gap-3">
       <Label htmlFor="model">Model</Label>
-      <Select name="model">
+      <Select name="model" disabled>
         <SelectTrigger
           id="model"
           className="items-start [&_[data-description]]:hidden"
@@ -74,7 +74,7 @@ function Questions() {
   return (
     <div className="grid gap-3">
       <Label htmlFor="questions">Questions</Label>
-      <Input name="questions" id="questions" type="number" placeholder="10" />
+      <Input name="questions" id="questions" type="number" placeholder="10" defaultValue={10} min={1} max={50} />
     </div>
   );
 }
@@ -83,7 +83,7 @@ function Options() {
   return (
     <div className="grid gap-3">
       <Label htmlFor="options">Options</Label>
-      <Input name="options" id="options" type="number" placeholder="4" />
+      <Input name="options" id="options" type="number" placeholder="4" defaultValue={4} min={2} max={10} />
     </div>
   );
 }
@@ -92,7 +92,7 @@ function Difficulty() {
   return (
     <div className="grid gap-3">
       <Label htmlFor="difficulty">Difficulty</Label>
-      <Select name="difficulty">
+      <Select name="difficulty" defaultValue="easy">
         <SelectTrigger
           id="difficulty"
           className="items-start [&_[data-description]]:hidden"
@@ -158,7 +158,7 @@ function Depth() {
   return (
     <div className="grid gap-3">
       <Label htmlFor="depth">Depth</Label>
-      <Select name="depth">
+      <Select name="depth" defaultValue="shallow">
         <SelectTrigger
           id="depth"
           className="items-start [&_[data-description]]:hidden"
