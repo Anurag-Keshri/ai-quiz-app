@@ -216,7 +216,7 @@ function Depth() {
 
 export default function Settings() {
   return (
-    <fieldset className="grid gap-6 rounded-lg border p-4">
+    <fieldset className="grid gap-6 rounded-lg border p-4 h-full">
       <legend className="-ml-1 px-1 text-sm font-medium">Settings</legend>
       <Model />
       <div className="grid grid-cols-2 gap-4">
