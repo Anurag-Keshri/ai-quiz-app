@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { useContext } from "react";
 import { useQuizOutputContext } from "@/context/quiz-output";
 
 export default function OutputSection() {

@@ -45,6 +45,5 @@ export async function quizFormAction(formData: FormData) {
 	}
 
 	const data = await response.json();
-	console.log(data);
 	return data;
 }
