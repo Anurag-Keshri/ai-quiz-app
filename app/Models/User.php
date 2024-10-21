@@ -45,4 +45,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+	// Define a relationship with the Quiz model
+	public function quizzes()
+	{
+		return $this->hasMany(Quiz::class);
+	}
+
+	// Define a relationship with the QuizAttempt model
+	public function quizAttempts()
+	{
+		return $this->hasMany(QuizAttempt::class);
+	}
 }
