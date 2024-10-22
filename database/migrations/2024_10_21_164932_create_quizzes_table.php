@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title'); 
             $table->text('description')->nullable(); 
             $table->integer('number_of_questions'); 
-            $table->json('options'); 
+            $table->integer('number_of_options'); 
             $table->timestamps(); 
         });
     }

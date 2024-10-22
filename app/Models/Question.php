@@ -9,7 +9,12 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['quiz_id', 'question_text'];
+    protected $fillable = [
+		'quiz_id', 
+		'question_text',
+		'options',
+		'correct_answer'
+	];
 
     // Define a relationship with the Quiz model
     public function quiz()
