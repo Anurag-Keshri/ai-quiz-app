@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['navTitle' => 'Take Quiz'])
 
 @section('content')
     <form action="{{ route('quiz.submit', ['id' => $quiz->id]) }}" method="POST" class="flex flex-col gap-6 max-w-3xl mx-auto p-6">

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['navTitle' => 'View Quiz'])
 
 @section('content')
     <div class="flex flex-col gap-6 max-w-3xl mx-auto p-6">

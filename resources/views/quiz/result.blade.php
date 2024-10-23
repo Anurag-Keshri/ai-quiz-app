@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['navTitle' => 'Quiz Results'])
 
 @section('header')
     <h1 class="text-3xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">Quiz Results</h1>

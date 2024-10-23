@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('header')
-    <h1 class="text-2xl font-bold">Welcome to the Quiz App</h1>
-@endsection
-
 @section('content')
     <div class="flex items-center justify-center p-4">
         <div class="w-full max-w-md dark:bg-gray-800 dark:border-gray-700 rounded-lg p-4 mt-36">

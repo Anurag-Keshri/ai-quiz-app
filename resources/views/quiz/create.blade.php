@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['navTitle' => 'Create Quiz'])
 
 @section('header')
     <h1 class="text-2xl font-bold">Create a New Quiz</h1>

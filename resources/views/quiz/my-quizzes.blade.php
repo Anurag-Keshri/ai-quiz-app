@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['navTitle' => 'My Quizzes'])
 
 @section('header')
     <h1 class="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">My Quizzes</h1>
