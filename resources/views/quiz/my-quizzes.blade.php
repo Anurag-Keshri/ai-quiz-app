@@ -21,13 +21,18 @@
                                         </h3>
                                         <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
-											{{ $quiz->created_at->format('F j, Y h:i A') }} • Questions: {{ $quiz->number_of_questions }}
+                                            {{ $quiz->created_at->format('F j, Y h:i A') }} • Questions: {{ $quiz->number_of_questions }}
                                         </div>
                                     </div>
-                                    <a href="{{ route('quiz.edit', $quiz->id) }}" class="flex gap-2 items-center justify-center text-gray-900 dark:text-gray-300">
-										<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-										Edit
-									</a>
+                                    <div class="flex items-center gap-4">
+                                        <a href="{{ route('quiz.edit', $quiz->id) }}" class="flex gap-2 items-center justify-center text-gray-900 dark:text-gray-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                                        </a>
+                                        <!-- Share Quiz Link Button -->
+                                        <a href="{{ route('quiz.take', $quiz->id) }}" target="_blank" class="flex gap-2 items-center justify-center text-gray-900 dark:text-gray-300">
+											<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+										</a>
+                                    </div>
                                 </div>
                             </div>
                         @empty
@@ -57,9 +62,8 @@
                                         </div>
                                     </div>
                                     <a href="{{ route('quiz.result', $attempt->id) }}" class="flex gap-2 items-center justify-center text-gray-900 dark:text-gray-300">
-										<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-										Results
-									</a>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </a>
                                 </div>
                             </div>
                         @empty
