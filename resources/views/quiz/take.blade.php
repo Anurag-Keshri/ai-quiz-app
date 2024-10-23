@@ -16,7 +16,7 @@
                     @foreach (json_decode($question->options) as $option) <!-- Decode JSON options -->
                         <li>
                             <label class="flex items-center">
-                                <input type="radio" name="question_{{ $question->id }}" value="{{ $option }}" class="mr-2">
+                                <input type="radio" name="question_{{ $question->id }}" value="{{ $option }}" class="mr-2" required>
                                 <span class="text-gray-700 dark:text-gray-300">{{ $option }}</span>
                             </label>
                         </li>
