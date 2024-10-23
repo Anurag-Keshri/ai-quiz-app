@@ -102,7 +102,7 @@ class QuizController extends Controller
      */
     public function edit($id)
     {
-        $quiz = Quiz::findOrFail($id); // Find the quiz by its ID
+		$quiz = Quiz::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         return view('quiz.edit', compact('quiz'));
     }
 
