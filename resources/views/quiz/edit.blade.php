@@ -1,15 +1,27 @@
+<h1>Edit Quiz</h1>
 
-    <div class="container">
-        <h1>Quiz Details</h1>
-        
-        <div>
-            <strong>User:</strong> {{ $quiz->user->name }}<br>
-            <strong>Title:</strong> {{ $quiz->title }}<br>
-            <strong>Description:</strong> {{ $quiz->description ?? 'N/A' }}<br>
-            <strong>Number of Questions:</strong> {{ $quiz->number_of_questions }}<br>
-            <strong>Number of Options:</strong> {{ $quiz->number_of_options }}<br>
-            <strong>Created At:</strong> {{ $quiz->created_at->format('d-m-Y H:i:s') }}<br>
-            <strong>Updated At:</strong> {{ $quiz->updated_at->format('d-m-Y H:i:s') }}<br>
-        </div>
-        
+<!-- Display Quiz Title -->
+<h2>{{ $quiz->title }}</h2>
+@php
+	// dd( json_decode($quiz->questions[0]->options));
+@endphp
+<!-- Loop through each question and display it with options -->
+@foreach ($quiz->questions as $question)
+    <div>
+        <h3>Question {{ $loop->iteration }}: {{ $question->question_text }}</h3>
+        <ul>
+            @foreach (json_decode($question->options) as $index => $option)
+                <li>
+                    <label>
+                        <input type="radio" name="question_{{ $question->id }}" value="{{ $option }}"
+                               {{ $index == $question->correct_answer ? 'checked' : '' }}>
+                        {{ $option }}
+                    </label>
+                </li>
+            @endforeach
+        </ul>
     </div>
+@endforeach
+
+<!-- Submit Button -->
+<button type="submit">Submit Quiz</button>

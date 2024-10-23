@@ -1,20 +1,31 @@
-
-<div class="container">
 <h1>My Quizzes</h1>
 
-	@if ($quizzes->isEmpty())
-		<p>No quizzes found.</p>
-	@else
-		<ul>
-			@foreach ($quizzes as $quiz)
-				<li>
-					<strong>Title:</strong> {{ $quiz->title }}<br>
-					<strong>Created At:</strong> {{ $quiz->created_at->format('d-m-Y H:i:s') }}<br>
-					<a href="{{ route('quiz.edit', $quiz->id) }}">Edit Quiz</a> | 
-					<a href="{{ route('quiz.take', $quiz->id) }}">Take Quiz</a>
-				</li>
-			@endforeach
-		</ul>
-	@endif
+<div style="display: flex; justify-content: space-between;">
+    <!-- Created Quizzes Column -->
+    <div style="width: 45%;">
+        <h2>Quizzes I Created</h2>
+        <ul>
+            @forelse ($createdQuizzes as $quiz)
+                <li>
+                    <a href="{{ route('quiz.edit', $quiz->id) }}">{{ $quiz->title }}</a>
+                </li>
+            @empty
+                <li>No quizzes created yet.</li>
+            @endforelse
+        </ul>
+    </div>
 
+    <!-- Taken Quizzes Column -->
+    <div style="width: 45%;">
+        <h2>Quizzes I Have Taken</h2>
+        <ul>
+            @forelse ($takenQuizzes as $attempt)
+                <li>
+                    <a href="{{ route('quiz.result', $attempt->id) }}">{{ $attempt->quiz->title }}</a>
+                </li>
+            @empty
+                <li>No quizzes taken yet.</li>
+            @endforelse
+        </ul>
+    </div>
 </div>

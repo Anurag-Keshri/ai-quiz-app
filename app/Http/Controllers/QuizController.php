@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Quiz;  
 use App\Models\Question;  
+use App\Models\QuizAttempt;  
+use App\Models\QuizAnswer;  
 use Illuminate\Support\Str;  // For generating a unique quiz ID.
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +20,14 @@ class QuizController extends Controller
     {
         return view('quiz.create'); // The form view
     }
+
+	public function show($id)
+	{
+		$quiz = Quiz::with('questions')->findOrFail($id); // Retrieve quiz with questions
+
+		return view('quiz.take', compact('quiz')); // Pass quiz data to the view
+	}
+
 
     /**
      * Handle the form submission to create a quiz.
@@ -63,7 +73,7 @@ class QuizController extends Controller
 				'user_id' => auth()->id(), // Store the user ID of the creator
 				'title' => $request->input('topic'),
 				'description' => 'Default description',
-				'number_of_questions' => 10,
+				'number_of_questions' => count($quizData),
 				'number_of_options' => $request->input('number_of_options'), // Store options as JSON
 			]);
 			
@@ -96,13 +106,96 @@ class QuizController extends Controller
         return view('quiz.edit', compact('quiz'));
     }
 
-	public function myQuizzes()
-    {
-        // Get the authenticated user's quizzes
-        $quizzes = Quiz::where('user_id', auth()->id())->get();
+	public function submit(Request $request, $id)
+	{
+		// Get the quiz
+		$quiz = Quiz::findOrFail($id);
+		
+		// Prepare validation rules dynamically
+		$validationRules = [];
+		foreach ($quiz->questions as $question) {
+			$validationRules['question_' . $question->id] = 'required|string'; // Expecting an integer index
+		}
+		
+		// Validate the incoming request
+		$request->validate($validationRules);
+		// dd($validationRules, $request);
 
-        // Return the view with the quizzes
-        return view('quiz.my-quizzes', compact('quizzes'));
-    }
+		// Initialize an array to hold the user's answers
+		$userAnswers = [];
+		$score = 0; // Track number of correct answers
+
+		// Loop through each question and store the selected answers
+		foreach ($quiz->questions as $question) {
+			// Build the dynamic answer key
+			$answerKey = 'question_' . $question->id;
+	
+			// Get the selected answer string
+			$selectedAnswer = $request->$answerKey; // This will return the answer string
+			
+			// Find the index of the selected answer in the options array
+			$selectedIndex = array_search($selectedAnswer, json_decode($question->options));
+	
+			// Check if the selected index matches the correct answer index
+			$isCorrect = $selectedIndex === $question->correct_answer;
+
+			// Store the answer details
+			$userAnswers[] = [
+				'question_id' => $question->id,
+				'selected_answer' => $selectedIndex, // Store the selected answer index
+				'is_correct' => $isCorrect, // Check if the answer is correct
+			];
+	
+			// Increment score if the answer is correct
+			if ($isCorrect) {
+				$score++;
+			}
+		}
+
+		// Create a quiz attempt record
+		$quizAttempt = QuizAttempt::create([
+			'user_id' => auth()->id(), // Assuming user is authenticated
+			'quiz_id' => $quiz->id,
+			'score' => $score, // Store the score or number of correct answers
+		]);
+
+		// Store user answers in the database
+		foreach ($userAnswers as $userAnswer) {
+			QuizAnswer::create([
+				'quiz_attempt_id' => $quizAttempt->id, // Associate with the quiz attempt
+				'question_id' => $userAnswer['question_id'],
+				'selected_answer' => $userAnswer['selected_answer'],
+				'is_correct' => $userAnswer['is_correct'],
+			]);
+		}
+
+		// Redirect to results page or any other page
+		return redirect()->route('quiz.result', ['id' => $quizAttempt->id]); // Adjust as needed
+	}
+
+	public function showResults($id)
+	{
+		// Retrieve the quiz attempt by ID
+		$quizAttempt = QuizAttempt::with(['quiz', 'quizAnswers.question'])->findOrFail($id);
+
+		// Pass the data to the view
+		return view('quiz.result', [
+			'quizAttempt' => $quizAttempt,
+		]);
+	}
+
+
+	public function myQuizzes()
+	{
+		// Get quizzes created by the authenticated user
+		$createdQuizzes = Quiz::where('user_id', auth()->id())->get();
+	
+		// Get quizzes taken by the authenticated user
+		$takenQuizzes = QuizAttempt::with('quiz') // Load associated quiz data
+			->where('user_id', auth()->id())
+			->get();
+	
+		return view('quiz.my-quizzes', compact('createdQuizzes', 'takenQuizzes'));
+	}
 
 }

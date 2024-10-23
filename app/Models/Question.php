@@ -16,6 +16,11 @@ class Question extends Model
 		'correct_answer'
 	];
 
+	protected $casts = [
+        'options' => 'array', // Automatically cast options to an array
+		'correct_answer' => 'integer'
+    ];
+
     // Define a relationship with the Quiz model
     public function quiz()
     {

@@ -14,20 +14,18 @@ Route::middleware('auth')->group(function () {
 	Route::get('/quiz/{id}/edit', [QuizController::class, 'edit'])
 		->name('quiz.edit');
 
-	Route::get('/quiz/{id}/take', function ($id) {
-		return view('quiz.take', ['id' => $id]);
-	})->name('quiz.take');
+	Route::get('/quiz/{id}/take', [QuizController::class, 'show'])
+		->name('quiz.take');
+
 	
 	Route::get('/quiz/my-quizzes', [QuizController::class, 'myQuizzes'])
 		->name('quiz.my-quizzes');
 	
 	
-	Route::post('/quiz/{id}/submit', function ($id) {
-		// Logic to submit and validate the quiz
-		return redirect()->route('quiz.results', ['id' => $id]);
-	})->name('quiz.submit');
+	Route::post('/quiz/{id}/submit', [QuizController::class, 'submit'])
+		->name('quiz.submit');
+
 	
-	Route::get('/quiz/{id}/results', function ($id) {
-		return view('quiz.results', ['id' => $id]);
-	})->name('quiz.results');
+	Route::get('/quiz/{id}/result', [QuizController::class, 'showResults'])
+		->name('quiz.result');
 });
