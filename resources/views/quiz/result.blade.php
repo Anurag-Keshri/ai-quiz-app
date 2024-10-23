@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="container mx-auto p-4 space-y-6 max-w-3xl">
-        <div class="bg-white dark:bg-gray-800 border rounded-lg p-6 shadow-md">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <div class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                     Score: {{ round(($quizAttempt->score / $quizAttempt->quiz->number_of_questions) * 100, 2) }}%
@@ -21,10 +21,10 @@
         <div class="">
             <div class="space-y-6">
                 @foreach ($quizAttempt->quizAnswers as $index => $answer)
-                    <div class="bg-white dark:bg-gray-800 border rounded-lg shadow-md">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
                         <div class="p-4">
                             <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                Question {{ $index + 1 }}: {{ $answer->question->question_text }}
+                                {{ $index + 1 }}: {{ $answer->question->question_text }}
                             </h3>
                             <div class="space-y-2 mt-2">
                                 @php
