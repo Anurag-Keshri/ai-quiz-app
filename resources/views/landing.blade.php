@@ -1,35 +1,55 @@
-<h1>Welcome to the Quiz App</h1>
+@extends('layouts.app')
 
-<div>
-    <a href="/quiz/create"><button>Create Quiz</button></a>
+@section('header')
+    <h1 class="text-2xl font-bold">Welcome to the Quiz App</h1>
+@endsection
 
-    <form id="takeQuizForm" method="GET" onsubmit="updateFormAction()">
-        <input type="number" id="quiz_id" placeholder="Enter the quiz ID" required>
-        <button type="submit">Take Quiz</button>
-    </form>
+@section('content')
+    <div class="flex items-center justify-center p-4">
+        <div class="w-full max-w-md dark:bg-gray-800 dark:border-gray-700 rounded-lg p-4 mt-36">
+			<div class="text-center text-2xl font-bold text-neutral-50">Ai Quiz App</div>
 
-    <a href="/quiz/my-quizzes"><button>My Quizzes</button></a>
-</div>
+            <p class="text-center text-neutral-500">Create, take, or view your quizzes</p>
 
-<!-- User Authentication Section -->
-<div>
-    @if(Auth::check())
-        <p>Hello, {{ Auth::user()->name }}!</p>
-        <form action="/logout" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
-    @else
-        <a href="/login"><button>Login</button></a>
-    @endif
-</div>
+            <div class="flex flex-col gap-4 mt-6">
+                <a href="/quiz/create">
+                    <x-primary-button class="w-full h-10">
+                        Create Quiz
+                    </x-primary-button>
+                </a>
 
-<script>
-    function updateFormAction() {
-        const quizId = document.getElementById('quiz_id').value;
-        const form = document.getElementById('takeQuizForm');
-        if (quizId) {
-            form.action = `/quiz/${quizId}/take`;
+                <form id="takeQuizForm" method="GET" class="space-y-2" onsubmit="updateFormAction()">
+                    <x-input-label for="quiz_id" :value="__('Quiz ID')" />
+                    <div class="flex space-x-2">
+                        <x-text-input
+                            id="quiz_id"
+                            type="number"
+                            placeholder="Enter Quiz ID"
+                            required
+                            class="flex-grow"
+                        />
+                        <x-primary-button type="submit">
+                            Take Quiz
+                        </x-primary-button>
+                    </div>
+                </form>
+
+                <a href="/quiz/my-quizzes">
+                    <x-secondary-button class="w-full h-10">
+                        My Quizzes
+                    </x-secondary-button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateFormAction() {
+            const quizId = document.getElementById('quiz_id').value;
+            const form = document.getElementById('takeQuizForm');
+            if (quizId) {
+                form.action = `/quiz/${quizId}/take`;
+            }
         }
-    }
-</script>
+    </script>
+@endsection
