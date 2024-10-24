@@ -12,7 +12,7 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">Quizzes I Created</h2>
                 <div class="overflow-y-auto h-[calc(100vh-200px)] border rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md">
                     <div class="space-y-3">
-                        @forelse ($createdQuizzes as $quiz)
+                        @forelse ($createdQuizzes->reverse() as $quiz)
                             <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -68,7 +68,7 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">Quizzes I Have Taken</h2>
                 <div class="overflow-y-auto h-[calc(100vh-200px)] border rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md">
                     <div class="space-y-3">
-                        @forelse ($takenQuizzes as $attempt)
+                        @forelse ($takenQuizzes->reverse() as $attempt)
                             <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                                 <div class="flex items-center justify-between">
                                     <div>
