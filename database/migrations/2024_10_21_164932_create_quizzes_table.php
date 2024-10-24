@@ -18,6 +18,12 @@ return new class extends Migration
             $table->text('description')->nullable(); 
             $table->integer('number_of_questions'); 
             $table->integer('number_of_options'); 
+			$table->integer('time_limit')->nullable(); 
+			$table->boolean('shuffle_questions')->default(false);
+			$table->boolean('shuffle_options')->default(false);
+			$table->boolean('show_results_immediately')->default(false); 
+			$table->dateTime('start_datetime')->nullable(); 
+			$table->dateTime('end_datetime')->nullable(); 
             $table->timestamps(); 
         });
     }
