@@ -28,4 +28,8 @@ Route::middleware('auth')->group(function () {
 	
 	Route::get('/quiz/{id}/result', [QuizController::class, 'showResults'])
 		->name('quiz.result');
+
+	Route::get('/quiz/{quiz}/responses', [QuizController::class, 'responses'])
+		->name('quiz.responses');
+
 });

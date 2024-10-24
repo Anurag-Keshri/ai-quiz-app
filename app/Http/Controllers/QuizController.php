@@ -102,7 +102,11 @@ class QuizController extends Controller
      */
     public function edit($id)
     {
-		$quiz = Quiz::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+		$quiz = Quiz::findOrFail($id);
+		// Ensure the current user is the quiz creator
+		if ($quiz->user_id !== auth()->id()) {
+			abort(403, 'Unauthorized action.');
+		}
         return view('quiz.edit', compact('quiz'));
     }
 
@@ -197,5 +201,20 @@ class QuizController extends Controller
 	
 		return view('quiz.my-quizzes', compact('createdQuizzes', 'takenQuizzes'));
 	}
+
+	public function responses($id)
+	{
+		// Fetch the quiz along with attempts and their related answers and questions
+		$quiz = Quiz::findOrFail($id);
+	
+		// Ensure the current user is the quiz creator
+		if ($quiz->user_id !== auth()->id()) {
+			abort(403, 'Unauthorized action.');
+		}
+	
+		// Pass the quiz data to the view
+		return view('quiz.responses', compact('quiz'));
+	}
+	
 
 }
