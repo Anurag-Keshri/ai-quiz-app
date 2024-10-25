@@ -258,6 +258,38 @@ class QuizController extends Controller
 		// Pass the quiz data to the view
 		return view('quiz.responses', compact('quiz'));
 	}
-	
 
+	public function rules($id)
+	{
+		$quiz = Quiz::findOrFail($id);
+		// Ensure the current user is the quiz creator
+		if ($quiz->user_id !== auth()->id()) {
+			abort(403, 'Unauthorized action.');
+		}
+		return view('quiz.rules', compact('quiz'));
+	}
+
+	public function updateRules(Request $request, $id)
+	{
+		// Update the quiz rules
+		$quiz = Quiz::findOrFail($id);
+		
+		// Validate the form input
+		$request->validate([
+			'time_limit' => 'required|integer|min:1', // Validate time limit
+		]);
+		// Update the quiz rules
+		$quiz->update([
+			'time_limit' => $request->input('time_limit'),
+			'shuffle_questions' => $request->has('shuffle_questions') ? true : false,
+			'shuffle_options' => $request->has('shuffle_options') ? true : false,
+			'show_correct_answer' => $request->has('show_correct_answer') ? true : false,
+			'show_score' => $request->has('show_score') ? true : false,
+			'start_datetime' => $request->input('start_datetime'),
+			'end_datetime' => $request->input('end_datetime'),
+		]);
+
+		return redirect()->route('landing')
+			->with('success', 'Quiz rules updated successfully!');
+	}
 }

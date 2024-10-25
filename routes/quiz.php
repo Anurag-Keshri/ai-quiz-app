@@ -17,9 +17,14 @@ Route::middleware('auth')->group(function () {
 	Route::get('/quiz/{id}/view', [QuizController::class, 'show'])
 		->name('quiz.view');
 
-	Route::get('/quiz/{id}/take', [QuizController::class, 'show'])
+	Route::get('/quiz/{id}/take', [QuizController::class, 'take'])
 		->name('quiz.take');
 
+	Route::get('/quiz/{id}/rules', [QuizController::class, 'rules'])
+		->name('quiz.rules');
+	
+	Route::put('/quiz/{id}/rules', [QuizController::class, 'updateRules'])
+		->name('quiz.update.rules');
 	
 	Route::get('/quiz/my-quizzes', [QuizController::class, 'myQuizzes'])
 		->name('quiz.my-quizzes');
