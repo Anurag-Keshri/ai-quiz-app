@@ -69,7 +69,7 @@
                     <!-- Topic (Prompt) -->
                     <div class="mb-4">
                         <x-input-label for="topic" :value="__('Topic (Prompt):')" />
-                        <textarea id="topic" name="topic" rows="3" placeholder="Enter the topic or prompt for the quiz" required class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200"></textarea>
+                        <textarea id="topic" name="topic" rows="3" placeholder="Enter the topic or prompt for the quiz"  class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200"></textarea>
                     </div>
 
                     <!-- Next Button -->
@@ -91,7 +91,7 @@
                     <div class="mb-4 flex items-center justify-between">
                         <x-input-label for="shuffle_questions" :value="__('Shuffle Questions:')" class="flex-shrink-0 mr-2" />
                         <label for="shuffle_questions" class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="shuffle_questions" name="shuffle_questions" class="sr-only peer">
+                            <input type="checkbox" id="shuffle_questions" name="shuffle_questions" value="true" class="sr-only peer">
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>
@@ -100,16 +100,25 @@
                     <div class="mb-4 flex items-center justify-between">
                         <x-input-label for="shuffle_options" :value="__('Shuffle Options:')" class="flex-shrink-0 mr-2" />
                         <label for="shuffle_options" class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="shuffle_options" name="shuffle_options" class="sr-only peer">
+                            <input type="checkbox" id="shuffle_options" name="shuffle_options" value="true" class="sr-only peer">
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>
 
-                    <!-- Show Results Immediately (Toggle) -->
+					<!-- Show Score (Toggle) -->
+					<div class="mb-4 flex items-center justify-between">
+						<x-input-label for="show_score" :value="__('Show Score:')" class="flex-shrink-0 mr-2" />
+						<label for="show_score" class="inline-flex items-center cursor-pointer">	
+							<input type="checkbox" id="show_score" name="show_score" checked value="true" class="sr-only peer">
+							<div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+						</label>
+					</div>
+
+                    <!-- Show Correct Answer (Toggle) -->
                     <div class="mb-4 flex items-center justify-between">
-                        <x-input-label for="show_results_immediately" :value="__('Show Results Immediately:')" class="flex-shrink-0 mr-2" />
-                        <label for="show_results_immediately" class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="show_results_immediately" name="show_results_immediately" class="sr-only peer">
+                        <x-input-label for="show_correct_answer" :value="__('Show Correct Answer:')" class="flex-shrink-0 mr-2" />
+                        <label for="show_correct_answer" class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="show_correct_answer" name="show_correct_answer" checked value="true" class="sr-only peer">
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>
@@ -117,7 +126,7 @@
                     <!-- Start and End Date & Time -->
                     <div class="mb-4">
                         <x-input-label for="start_datetime" :value="__('Start Date & Time:')" />
-                        <input type="datetime-local" id="start_datetime" name="start_datetime" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        <input type="datetime-local" id="start_datetime" name="start_datetime"  class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
                     </div>
 
                     <div class="mb-4">

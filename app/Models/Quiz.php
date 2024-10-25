@@ -14,7 +14,14 @@ class Quiz extends Model
 		'title', 
 		'description', 
 		'number_of_questions', 
-		'number_of_options'
+		'number_of_options',
+		'time_limit',
+		'start_datetime',
+		'end_datetime',
+		'shuffle_questions',
+		'shuffle_options',
+		'show_correct_answer',
+		'show_score',
 	];
 
     // Define a relationship with the User model

@@ -24,6 +24,7 @@
 
             <!-- Page Content -->
             <main>
+                @include('components.alert')
                 {{-- {{ $slot }} --}}
 				@yield('content')
             </main>

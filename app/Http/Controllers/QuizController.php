@@ -42,20 +42,34 @@ class QuizController extends Controller
 			'difficulty' => 'required|string|max:255', // Validate difficulty level
 			'depth' => 'required|string|max:255', // Validate depth level
 			'topic' => 'required|string|max:255', // Validate topic (prompt)
+			'time_limit' => 'required|integer|min:1', // Validate time limit
+			'start_datetime' => 'nullable|date', // Validate start datetime
+			'end_datetime' => 'nullable|date', // Validate end datetime
 		]);
+
 		
-	
+		
+		// Validate if start_datetime is smaller than end_datetime
+		if ($request->has('start_datetime') && $request->has('end_datetime')) {
+			$startDatetime = strtotime($request->input('start_datetime'));
+			$endDatetime = strtotime($request->input('end_datetime'));
+
+			if ($startDatetime >= $endDatetime) {
+				return redirect()->back()->withInput()->with('alert', 'Start Date & Time must be earlier than End Date & Time.');
+			}
+		}
+
+
 		// Prepare the data for the API call
 		$formData = [
 			'model' => $request->input('model'),
-			'numQuestions' => $request->input('number_of_questions'), // Use the correct field name
-			'numOptions' => $request->input('number_of_options'), // The number of options
+			'numQuestions' => $request->input('number_of_questions'),
+			'numOptions' => $request->input('number_of_options'),
 			'difficulty' => $request->input('difficulty'),
 			'depth' => $request->input('depth'),
 			'topic' => $request->input('topic'),
 		];
 		
-	
 		// Make an API call to ai-quiz-api to generate quiz questions
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
@@ -70,13 +84,19 @@ class QuizController extends Controller
 			// dd($quizData, count($quizData));
 			// Step 1: Create the quiz in the database
 			$quiz = Quiz::create([
-				'user_id' => auth()->id(), // Store the user ID of the creator
+				'user_id' => auth()->id(),
 				'title' => $request->input('topic'),
 				'description' => 'Default description',
 				'number_of_questions' => count($quizData),
-				'number_of_options' => $request->input('number_of_options'), // Store options as JSON
+				'number_of_options' => $request->input('number_of_options'),
+				'time_limit' => $request->input('time_limit'),
+				'start_datetime' => $request->has('start_datetime') ? $request->input('start_datetime') : null,
+				'end_datetime' => $request->has('end_datetime') ? $request->input('end_datetime') : null,
+				'shuffle_questions' => $request->has('shuffle_questions') ? true : false,
+				'shuffle_options' => $request->has('shuffle_options') ? true : false,
+				'show_correct_answer' => $request->has('show_correct_answer') ? true : false,
+				'show_score' => $request->has('show_score') ? true : false,
 			]);
-			
 			
 			// Step 2: Store each question in the questions table
 			foreach ($quizData as $questionData) {
