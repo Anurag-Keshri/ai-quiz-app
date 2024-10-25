@@ -23,7 +23,30 @@ class QuizController extends Controller
 
 	public function show($id)
 	{
+		$quiz = Quiz::findOrFail($id);
+		// Ensure the current user is the quiz creator
+		if ($quiz->user_id !== auth()->id()) {
+			abort(403, 'Unauthorized action.');
+		}
+		return view('quiz.view', compact('quiz'));
+	}
+
+	public function take($id)
+	{
 		$quiz = Quiz::with('questions')->findOrFail($id); // Retrieve quiz with questions
+
+		// Check if the quiz has a start datetime and end datetime
+		if ($quiz->start_datetime) {
+			if (now()->lessThan($quiz->start_datetime)) {
+				return redirect()->back()->with('alert', 'Quiz is not available yet.');
+			}
+		} 
+
+		if ($quiz->end_datetime) {
+			if (now()->greaterThan($quiz->end_datetime)) {
+				return redirect()->back()->with('alert', 'Quiz has ended.');
+			}
+		}
 
 		return view('quiz.take', compact('quiz')); // Pass quiz data to the view
 	}
@@ -50,7 +73,7 @@ class QuizController extends Controller
 		
 		
 		// Validate if start_datetime is smaller than end_datetime
-		if ($request->has('start_datetime') && $request->has('end_datetime')) {
+		if ($request->has('start_datetime') && $request->has('end_datetime') && $request->input('start_datetime') && $request->input('end_datetime')) {
 			$startDatetime = strtotime($request->input('start_datetime'));
 			$endDatetime = strtotime($request->input('end_datetime'));
 

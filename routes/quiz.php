@@ -10,9 +10,12 @@ Route::middleware('auth')->group(function () {
 	
 	Route::post('/quiz/create', [QuizController::class, 'store'])
 		->name('quiz.store');
-	
+
 	Route::get('/quiz/{id}/edit', [QuizController::class, 'edit'])
 		->name('quiz.edit');
+
+	Route::get('/quiz/{id}/view', [QuizController::class, 'show'])
+		->name('quiz.view');
 
 	Route::get('/quiz/{id}/take', [QuizController::class, 'show'])
 		->name('quiz.take');
