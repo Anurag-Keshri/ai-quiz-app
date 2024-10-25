@@ -9,9 +9,9 @@
 
             <div class="flex flex-col gap-4 mt-6">
                 <a href="/quiz/create">
-                    <x-primary-button class="w-full h-10">
+                    <x-secondary-button class="w-full h-10">
                         Create Quiz
-                    </x-primary-button>
+                    </x-secondary-button>
                 </a>
 
                 <form id="takeQuizForm" method="GET" class="space-y-2" onsubmit="updateFormAction()">

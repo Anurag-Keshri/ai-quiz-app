@@ -77,7 +77,7 @@
                                         </h3>
                                         <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
-                                            {{ $attempt->created_at->format('F j, Y h:i A') }} • Score: {{ $attempt->score }}
+                                            {{ $attempt->created_at->format('F j, Y h:i A') }} @if ($attempt->quiz->show_score) • Score: {{ $attempt->score }} @endif
                                         </div>
                                     </div>
 									<div class="relative group">
