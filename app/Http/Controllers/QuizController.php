@@ -377,4 +377,11 @@ class QuizController extends Controller
 		return redirect()->route('landing')
 			->with('success', 'Quiz rules updated successfully!');
 	}
+
+	public function destroy($id)
+	{
+		$quiz = Quiz::findOrFail($id);
+		$quiz->delete();
+		return redirect()->route('quiz.my-quizzes')->with('success', 'Quiz deleted successfully!');
+	}
 }

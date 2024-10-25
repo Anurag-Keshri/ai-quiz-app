@@ -40,4 +40,6 @@ Route::middleware('auth')->group(function () {
 	Route::get('/quiz/{quiz}/responses', [QuizController::class, 'responses'])
 		->name('quiz.responses');
 
+	Route::delete('/quiz/{id}', [QuizController::class, 'destroy'])
+		->name('quiz.destroy');
 });
