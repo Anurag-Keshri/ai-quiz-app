@@ -85,7 +85,7 @@
                     <!-- Time Limit -->
                     <div class="mb-4">
                         <x-input-label for="time_limit" :value="__('Time Limit (Minutes):')" />
-                        <input type="number" id="time_limit" name="time_limit" min="1" value="30" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        <input type="number" id="time_limit" name="time_limit" min="0" value="30" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
                     </div>
                     <!-- Shuffle Questions (Toggle) -->
                     <div class="mb-4 flex items-center justify-between">

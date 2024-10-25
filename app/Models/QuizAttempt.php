@@ -9,8 +9,13 @@ class QuizAttempt extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'quiz_id', 'score'];
+    protected $fillable = ['user_id', 'quiz_id', 'score', 'completed', 'completed_at', 'started_at'];
 
+    protected $casts = [
+        'started_at' => 'datetime', // Ensure started_at is treated as a Carbon instance
+        'completed_at' => 'datetime',
+    ];
+	
     // Define a relationship with the User model
     public function user()
     {

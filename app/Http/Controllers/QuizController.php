@@ -31,25 +31,92 @@ class QuizController extends Controller
 		return view('quiz.view', compact('quiz'));
 	}
 
-	public function take($id)
+	public function take(Request $request, $id)
 	{
-		$quiz = Quiz::with('questions')->findOrFail($id); // Retrieve quiz with questions
-
-		// Check if the quiz has a start datetime and end datetime
-		if ($quiz->start_datetime) {
-			if (now()->lessThan($quiz->start_datetime)) {
-				return redirect()->back()->with('alert', 'Quiz is not available yet.');
-			}
-		} 
-
-		if ($quiz->end_datetime) {
-			if (now()->greaterThan($quiz->end_datetime)) {
-				return redirect()->back()->with('alert', 'Quiz has ended.');
+		$quiz = Quiz::with('questions')->findOrFail($id);
+	
+		// Check if the quiz is available
+		if ($quiz->start_datetime && now()->lessThan($quiz->start_datetime)) {
+			return redirect()->back()->with('alert', 'Quiz is not available yet.');
+		}
+		if ($quiz->end_datetime && now()->greaterThan($quiz->end_datetime)) {
+			return redirect()->back()->with('alert', 'Quiz has ended.');
+		}
+	
+		$attemptId = $request->query('attemptId');
+	
+		// Handle existing attempt if provided
+		if ($attemptId) {
+			$quizAttempt = QuizAttempt::where('id', $attemptId)
+				->where('quiz_id', $quiz->id)
+				->where('user_id', auth()->id())
+				->first();
+	
+			if ($quizAttempt) {
+				if ($this->checkIfTimeExceeded($quiz, $quizAttempt)) {
+					$quizAttempt->update([
+						'completed' => true,
+						'completed_at' => now(),
+					]);
+				}
+	
+				if ($quizAttempt->completed) {
+					return redirect()->route('landing')->with('alert', 'This quiz attempt has already been completed.');
+				}
+	
+				return view('quiz.take', compact('quiz', 'attemptId', 'quizAttempt'));
 			}
 		}
-
-		return view('quiz.take', compact('quiz')); // Pass quiz data to the view
+	
+		// Check for existing uncompleted attempt
+		$existingAttempt = QuizAttempt::where('quiz_id', $quiz->id)
+			->where('user_id', auth()->id())
+			->where('completed', false)
+			->first();
+	
+		if ($existingAttempt) {
+			if ($this->checkIfTimeExceeded($quiz, $existingAttempt)) {
+				$existingAttempt->update([
+					'completed' => true,
+					'completed_at' => now(),
+				]);
+			}
+	
+			if ($existingAttempt->completed) {
+				return redirect()->route('landing')->with('alert', 'This quiz attempt has already been completed.');
+			}
+			
+			return redirect()->route('quiz.take', ['id' => $quiz->id, 'attemptId' => $existingAttempt->id]);
+		}
+	
+		// Create a new attempt if no uncompleted attempt exists
+		$newAttempt = QuizAttempt::create([
+			'quiz_id' => $quiz->id,
+			'user_id' => auth()->id(),
+			'started_at' => now(),
+			'completed' => false,
+		]);
+	
+		// Redirect to the new attempt
+		return redirect()->route('quiz.take', ['id' => $quiz->id, 'attemptId' => $newAttempt->id]);
 	}
+	
+	// Helper function to check if time has exceeded the limit
+	protected function checkIfTimeExceeded($quiz, $quizAttempt)
+	{
+		$timeLimit = $quiz->time_limit; // Assuming time_limit is in minutes
+		if ($timeLimit) {
+			$timeLimitInSeconds = $timeLimit * 60; // Convert to seconds
+			$startedAtTimestamp = $quizAttempt->started_at->timestamp;
+			$currentTimestamp = now()->timestamp;
+			$elapsedTime = $currentTimestamp - $startedAtTimestamp;
+	
+			return $elapsedTime > $timeLimitInSeconds;
+		}
+	
+		return false;
+	}
+	
 
 
     /**
@@ -65,7 +132,7 @@ class QuizController extends Controller
 			'difficulty' => 'required|string|max:255', // Validate difficulty level
 			'depth' => 'required|string|max:255', // Validate depth level
 			'topic' => 'required|string|max:255', // Validate topic (prompt)
-			'time_limit' => 'required|integer|min:1', // Validate time limit
+			'time_limit' => 'required|integer|min:0', // Validate time limit
 			'start_datetime' => 'nullable|date', // Validate start datetime
 			'end_datetime' => 'nullable|date', // Validate end datetime
 		]);
@@ -155,69 +222,86 @@ class QuizController extends Controller
 
 	public function submit(Request $request, $id)
 	{
-		// Get the quiz
-		$quiz = Quiz::findOrFail($id);
+		// Retrieve the quiz
+		$quiz = Quiz::with('questions')->findOrFail($id);
 		
-		// Prepare validation rules dynamically
-		$validationRules = [];
-		foreach ($quiz->questions as $question) {
-			$validationRules['question_' . $question->id] = 'required|string'; // Expecting an integer index
+		// Check quiz availability (start and end times)
+		if ($quiz->start_datetime && now()->lessThan($quiz->start_datetime)) {
+			return redirect()->back()->with('alert', 'Quiz is not available yet.');
+		}
+		if ($quiz->end_datetime && now()->greaterThan($quiz->end_datetime)) {
+			return redirect()->back()->with('alert', 'Quiz has ended.');
 		}
 		
+		// Check for an existing attempt
+		$attemptId = $request->query('attemptId');
+		$quizAttempt = QuizAttempt::where('id', $attemptId)
+			->where('quiz_id', $quiz->id)
+			->where('user_id', auth()->id())
+			->first();
+
+		if ($quizAttempt && $quizAttempt->user_id !== auth()->id()) {
+			abort(403, 'Unauthorized access.');
+		}
+	
+		// If no existing attempt is found, create a new attempt
+		if (!$quizAttempt) {
+			$quizAttempt = QuizAttempt::create([
+				'user_id' => auth()->id(),
+				'quiz_id' => $quiz->id,
+				'score' => 0, // Initial score (to be updated)
+				'completed' => false, // Indicate attempt is in progress
+				'started_at' => now(),
+			]);
+		}
+		// Prepare validation rules dynamically for each question
+		$validationRules = [];
+		foreach ($quiz->questions as $question) {
+			$validationRules['question_' . $question->id] = 'required|string';
+		}
 		// Validate the incoming request
 		$request->validate($validationRules);
-		// dd($validationRules, $request);
-
-		// Initialize an array to hold the user's answers
+		
+		// Initialize variables for user answers and score calculation
 		$userAnswers = [];
-		$score = 0; // Track number of correct answers
-
-		// Loop through each question and store the selected answers
+		$score = 0;
+		
+		// Loop through questions to process answers
 		foreach ($quiz->questions as $question) {
-			// Build the dynamic answer key
 			$answerKey = 'question_' . $question->id;
-	
-			// Get the selected answer string
-			$selectedAnswer = $request->$answerKey; // This will return the answer string
-			
-			// Find the index of the selected answer in the options array
+			$selectedAnswer = $request->$answerKey;
 			$selectedIndex = array_search($selectedAnswer, json_decode($question->options));
-	
-			// Check if the selected index matches the correct answer index
 			$isCorrect = $selectedIndex === $question->correct_answer;
-
-			// Store the answer details
+			
+			// Record the user's answer
 			$userAnswers[] = [
+				'quiz_attempt_id' => $quizAttempt->id,
 				'question_id' => $question->id,
-				'selected_answer' => $selectedIndex, // Store the selected answer index
-				'is_correct' => $isCorrect, // Check if the answer is correct
+				'selected_answer' => $selectedIndex,
+				'is_correct' => $isCorrect,
 			];
-	
-			// Increment score if the answer is correct
+			
+			// Increase score if the answer is correct
 			if ($isCorrect) {
 				$score++;
 			}
 		}
-
-		// Create a quiz attempt record
-		$quizAttempt = QuizAttempt::create([
-			'user_id' => auth()->id(), // Assuming user is authenticated
-			'quiz_id' => $quiz->id,
-			'score' => $score, // Store the score or number of correct answers
+		
+		// Update attempt with the score and mark as completed
+		$quizAttempt->update([
+			'score' => $score,
+			'completed' => true,
+			'completed_at' => now(),
 		]);
 
-		// Store user answers in the database
+	
+		// Store answers in the database
 		foreach ($userAnswers as $userAnswer) {
-			QuizAnswer::create([
-				'quiz_attempt_id' => $quizAttempt->id, // Associate with the quiz attempt
-				'question_id' => $userAnswer['question_id'],
-				'selected_answer' => $userAnswer['selected_answer'],
-				'is_correct' => $userAnswer['is_correct'],
-			]);
+			QuizAnswer::create($userAnswer);
 		}
-
-		// Redirect to results page or any other page
-		return redirect()->route('quiz.result', ['id' => $quizAttempt->id]); // Adjust as needed
+	
+		// Redirect to results page, passing the `attemptId`
+		return redirect()->route('quiz.result', ['id' => $quizAttempt->id]);
 	}
 
 	public function showResults($id)
@@ -240,6 +324,7 @@ class QuizController extends Controller
 		// Get quizzes taken by the authenticated user
 		$takenQuizzes = QuizAttempt::with('quiz') // Load associated quiz data
 			->where('user_id', auth()->id())
+			->where('completed', true)
 			->get();
 	
 		return view('quiz.my-quizzes', compact('createdQuizzes', 'takenQuizzes'));
