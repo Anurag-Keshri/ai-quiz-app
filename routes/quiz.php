@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\QuizController;
+use App\Http\Controllers\Quiz\QuizController;
 
 
 Route::middleware('auth')->group(function () {

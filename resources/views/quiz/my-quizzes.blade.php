@@ -21,7 +21,7 @@
                                         </h3>
                                         <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                                             @include('components.icons.calendar-days', ['class' => 'w-4 h-4'])
-                                            {{ $quiz->created_at->format('F j, Y h:i A') }} • Questions: {{ $quiz->number_of_questions }}
+                                            {{ $quiz->created_at->format('F j, Y h:i A') }} • Questions: {{ $quiz->questions->count() }}
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-4">
@@ -100,7 +100,7 @@
                                         </h3>
                                         <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                                             @include('components.icons.calendar-days', ['class' => 'w-4 h-4'])
-                                            {{ $attempt->created_at->format('F j, Y h:i A') }} @if ($attempt->quiz->show_score) • Score: {{ $attempt->score }} @endif
+                                            {{ $attempt->created_at->format('F j, Y h:i A') }} @if ($attempt->quiz->rules->show_score) • Score: {{ $attempt->score }} @endif
                                         </div>
                                     </div>
 									<div class="relative group">

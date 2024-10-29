@@ -20,7 +20,7 @@
 						</div>
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">Total Questions</p>
-							<p class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $quiz->number_of_questions }}</p>
+							<p class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $quiz->questions->count() }}</p>
 						</div>
 					</div>
 
@@ -42,7 +42,7 @@
 					$totalScore = $quiz->attempts->sum('score');
 					$totalAttempts = $quiz->attempts->count();
 					$averageScore = $totalAttempts > 0 ? $totalScore / $totalAttempts : 0;
-					$scorePercentage = $quiz->number_of_questions > 0 ? ($averageScore / $quiz->number_of_questions) * 100 : 0;
+					$scorePercentage = $quiz->questions->count() > 0 ? ($averageScore / $quiz->questions->count()) * 100 : 0;
 					
 					// Define color classes based on score percentage
 					if ($scorePercentage >= 80) {
@@ -72,7 +72,7 @@
 									{{ number_format($averageScore, 1) }}
 								</p>
 								<span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
-									out of {{ $quiz->number_of_questions }}
+									out of {{ $quiz->questions->count() }}
 									<span class="ml-1">({{ number_format($scorePercentage, 1) }}%)</span>
 								</span>
 							</div>
@@ -177,14 +177,14 @@
 							</td>
 							<td class="px-6 py-4">
 								@php
-									$scorePercentage = ($attempt->score / $quiz->number_of_questions) * 100;
+									$scorePercentage = ($attempt->score / $quiz->questions->count()) * 100;
 									$scoreColor = $scorePercentage >= 80 ? 'text-green-600 dark:text-green-400' : 
 												($scorePercentage >= 60 ? 'text-yellow-600 dark:text-yellow-400' : 
 												'text-red-600 dark:text-red-400');
 								@endphp
 								<div class="flex flex-col">
 									<span class="text-sm font-medium {{ $scoreColor }}">
-										{{ $attempt->score }} / {{ $quiz->number_of_questions }}
+										{{ $attempt->score }} / {{ $quiz->questions->count() }}
 									</span>
 									<div class="w-24">
 										<div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full">
@@ -222,28 +222,28 @@
 						<tr id="answers-{{ $attempt->id }}" class="hidden">
 							<td colspan="5" class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50">
 								<div class="space-y-6">
-									@foreach ($attempt->quizAnswers as $answer)
-										<div class="relative pl-4 {{ $answer->is_correct ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500' }}">
+									@foreach ($attempt->answers as $answer)
+										<div class="relative pl-4 {{ $answer->option->is_correct ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500' }}">
 											<div class="mb-2">
-												<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $answer->is_correct ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' }}">
+												<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $answer->option->is_correct ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' }}">
 													Question {{ $loop->iteration }}
 												</span>
 											</div>
 											<p class="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
-												{{ $answer->question->question_text }}
+												{{ $answer->option->question->question_text }}
 											</p>
 											<div class="ml-4 space-y-2">
 												<p class="text-sm text-gray-600 dark:text-gray-300">
 													<span class="font-medium">Your answer:</span> 
-													<span class="ml-1 {{ $answer->is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-														{{ json_decode($answer->question->options)[$answer->selected_answer] }}
+													<span class="ml-1 {{ $answer->option->is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+														{{ $answer->option->option_text }}
 													</span>
 												</p>
-												@if (!$answer->is_correct)
+												@if (!$answer->option->is_correct)
 													<p class="text-sm text-gray-600 dark:text-gray-300">
 														<span class="font-medium">Correct answer:</span>
 														<span class="ml-1 text-green-600 dark:text-green-400">
-															{{ json_decode($answer->question->options)[$answer->question->correct_answer] }}
+															{{ $answer->option->question->options->where('is_correct', true)->first()->option_text }}
 														</span>
 													</p>
 												@endif

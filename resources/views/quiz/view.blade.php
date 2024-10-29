@@ -11,12 +11,12 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 ">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ $loop->iteration }}. {{ $question->question_text }}</h3>
                 <ul class="mt-2 space-y-2">
-                    @foreach (json_decode($question->options) as $index => $option) <!-- Decode JSON options -->
+                    @foreach ($question->options as $option) <!-- Decode JSON options -->
                         <li>
                             <label class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                                <input disabled type="radio" name="question_{{ $question->id }}" value="{{ $option }}" class="mr-2" required
-									{{ $index == $question->correct_answer ? 'checked' : '' }}>
-                                <span class="text-gray-700 dark:text-gray-300">{{ $option }}</span>
+                                <input disabled type="radio" name="question_{{ $question->id }}" value="{{ $option->option_text }}" class="mr-2" required
+									{{ $option->is_correct ? 'checked' : '' }}>
+                                <span class="text-gray-700 dark:text-gray-300">{{ $option->option_text }}</span>
                             </label>
                         </li>
                     @endforeach

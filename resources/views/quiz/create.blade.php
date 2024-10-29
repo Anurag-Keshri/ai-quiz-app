@@ -125,13 +125,13 @@
 
                     <!-- Start and End Date & Time -->
                     <div class="mb-4">
-                        <x-input-label for="start_datetime" :value="__('Start Date & Time:')" />
-                        <input type="datetime-local" id="start_datetime" name="start_datetime"  class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        <x-input-label for="start_date" :value="__('Start Date & Time:')" />
+                        <input type="datetime-local" id="start_date" name="start_date"  class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
                     </div>
 
                     <div class="mb-4">
-                        <x-input-label for="end_datetime" :value="__('End Date & Time:')" />
-                        <input type="datetime-local" id="end_datetime" name="end_datetime" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        <x-input-label for="end_date" :value="__('End Date & Time:')" />
+                        <input type="datetime-local" id="end_date" name="end_date" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
                     </div>
 
                     <!-- Submit Button -->

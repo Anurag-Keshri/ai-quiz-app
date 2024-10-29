@@ -3,11 +3,11 @@
 @section('content')
     @php
         // Get the time limit in seconds if it exists
-        $timeLimit = $quiz->time_limit; // Assuming time_limit is in minutes
+        $timeLimit = $quiz->rules->time_limit; // Assuming time_limit is in minutes
         $timeLimitInSeconds = $timeLimit ? $timeLimit * 60 : 0; // Convert to seconds
 
         // Get the started_at timestamp from the attempt
-        $startedAt = $quizAttempt->started_at; // Assuming $quizAttempt is passed to the view
+        $startedAt = $attempt->created_at; // Assuming $quizAttempt is passed to the view
         $startedAtTimestamp = $startedAt->timestamp; // Get the timestamp
 
         // Calculate elapsed time in seconds
@@ -34,7 +34,7 @@
         </div>
 
         @php
-            if ($quiz->shuffle_questions) {
+            if ($quiz->rules->shuffle_questions) {
                 $questions = $quiz->questions->shuffle();
             } else {
                 $questions = $quiz->questions;
@@ -46,17 +46,17 @@
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ $loop->iteration }}. {{ $question->question_text }}</h3>
                 <ul class="mt-2 space-y-2">
                     @php
-                        if ($quiz->shuffle_options) {
-                            $options = collect(json_decode($question->options))->shuffle();
+                        if ($quiz->rules->shuffle_options) {
+                            $options = $question->options->shuffle();
                         } else {
-                            $options = json_decode($question->options);
+                            $options = $question->options;
                         }
                     @endphp
-                    @foreach ($options as $option) <!-- Decode JSON options -->
+                    @foreach ($options as $option) 
                         <li>
                             <label class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150">
-                                <input type="radio" name="question_{{ $question->id }}" value="{{ $option }}" class="mr-2" required>
-                                <span class="text-gray-700 dark:text-gray-300">{{ $option }}</span>
+                                <input type="radio" name="question_{{ $question->id }}" value="{{ $option->id }}" class="mr-2" required>
+                                <span class="text-gray-700 dark:text-gray-300">{{ $option->option_text }}</span>
                             </label>
                         </li>
                     @endforeach

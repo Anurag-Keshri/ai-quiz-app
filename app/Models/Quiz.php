@@ -2,43 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Quiz extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-		'user_id', 
-		'title', 
-		'description', 
-		'number_of_questions', 
-		'number_of_options',
-		'time_limit',
-		'start_datetime',
-		'end_datetime',
-		'shuffle_questions',
-		'shuffle_options',
-		'show_correct_answer',
-		'show_score',
-	];
+        'title',
+        'description',
+        'user_id',
+    ];
 
-    // Define a relationship with the User model
-    public function user()
+    /**
+     * Get the user that created the quiz.
+     */
+    public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Define a relationship with the Question model
-    public function questions()
+    /**
+     * Get the rules for the quiz.
+     */
+    public function rules(): HasOne
+    {
+        return $this->hasOne(QuizRule::class);
+    }
+
+    /**
+     * Get the questions for the quiz.
+     */
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
 
-    // Define a relationship with the QuizAttempt model
-    public function attempts()
+    /**
+     * Get the attempts for the quiz.
+     */
+    public function attempts(): HasMany
     {
-        return $this->hasMany(QuizAttempt::class);
+        return $this->hasMany(Attempt::class);
     }
 }

@@ -2,34 +2,35 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Question extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-		'quiz_id', 
-		'question_text',
-		'options',
-		'correct_answer'
-	];
-
-	protected $casts = [
-        'options' => 'array', // Automatically cast options to an array
-		'correct_answer' => 'integer'
+        'quiz_id',
+        'question_text',
+        'time_limit',
     ];
 
-    // Define a relationship with the Quiz model
-    public function quiz()
+    protected $casts = [
+        'time_limit' => 'integer',
+    ];
+
+    /**
+     * Get the quiz that owns the question.
+     */
+    public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
     }
 
-    // Define a relationship with the QuizAnswer model
-    public function quizAnswers()
+    /**
+     * Get the options for the question.
+     */
+    public function options(): HasMany
     {
-        return $this->hasMany(QuizAnswer::class);
+        return $this->hasMany(Option::class);
     }
 }
