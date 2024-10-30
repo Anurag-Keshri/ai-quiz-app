@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Quiz\QuizController;
-
+use App\Http\Controllers\Quiz\QuizRuleController;
 
 Route::middleware('auth')->group(function () {
 	Route::get('/quiz/create', [QuizController::class, 'create'])
@@ -42,4 +42,13 @@ Route::middleware('auth')->group(function () {
 
 	Route::delete('/quiz/{id}', [QuizController::class, 'destroy'])
 		->name('quiz.destroy');
+
+	Route::get('/quizzes/{quiz}/rules', [QuizRuleController::class, 'show'])
+		->name('quiz_rules.show');
+
+	Route::get('/quizzes/{quiz}/rules/edit', [QuizRuleController::class, 'edit'])
+		->name('quiz_rules.edit');
+
+	Route::put('/quizzes/{quiz}/rules', [QuizRuleController::class, 'update'])
+		->name('quiz_rules.update');
 });

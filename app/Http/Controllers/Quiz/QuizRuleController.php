@@ -1,66 +1,67 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Quiz;
 
+use App\Http\Controllers\Controller;
+use App\Models\Quiz;
 use App\Models\QuizRule;
-use App\Http\Requests\StoreQuizRuleRequest;
-use App\Http\Requests\UpdateQuizRuleRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class QuizRuleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function show(Quiz $quiz)
     {
-        //
+		// Authorize the request
+		Gate::authorize('view', $quiz->rules);
+
+		// Get or create the quiz rules
+        $quizRules = $quiz->rules ?? new QuizRule(['quiz_id' => $quiz->id]);
+
+        return view('quiz-rules.show', compact('quiz', 'quizRules'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function edit(Quiz $quiz)
     {
-        //
+		// Authorize the request
+		Gate::authorize('update', $quiz->rules);
+
+		// Get or create the quiz rules
+        $quizRules = $quiz->rules ?? new QuizRule(['quiz_id' => $quiz->id]);
+
+        return view('quiz-rules.edit', compact('quiz', 'quizRules'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreQuizRuleRequest $request)
+    public function update(Request $request, Quiz $quiz)
     {
-        //
-    }
+		// Authorize the request
+		Gate::authorize('update', $quiz->rules);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(QuizRule $quizRule)
-    {
-        //
-    }
+		// Validate the request
+        $validated = $request->validate([
+            'time_limit' => 'nullable|integer|min:1',
+            'show_score' => 'boolean',
+            'shuffle_options' => 'boolean',
+            'shuffle_questions' => 'boolean',
+            'show_correct_answer' => 'boolean',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after:start_date',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(QuizRule $quizRule)
-    {
-        //
-    }
+        // Convert checkbox values to boolean
+        $validated['show_score'] = $request->has('show_score');
+        $validated['shuffle_options'] = $request->has('shuffle_options');
+        $validated['shuffle_questions'] = $request->has('shuffle_questions');
+        $validated['show_correct_answer'] = $request->has('show_correct_answer');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateQuizRuleRequest $request, QuizRule $quizRule)
-    {
-        //
-    }
+		// Update or create the quiz rules
+        $quiz->rules()->updateOrCreate(
+            ['quiz_id' => $quiz->id],
+            $validated
+        );
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(QuizRule $quizRule)
-    {
-        //
+        return redirect()
+            ->route('quiz_rules.show', $quiz)
+            ->with('success', 'Quiz rules updated successfully');
     }
 }

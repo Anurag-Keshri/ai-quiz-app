@@ -18,6 +18,16 @@ class QuizRule extends Model
         'end_date',
     ];
 
+    protected $attributes = [
+        'time_limit' => null,
+        'show_score' => true,
+        'shuffle_options' => true,
+        'shuffle_questions' => true,
+        'show_correct_answer' => true,
+        'start_date' => null,
+        'end_date' => null,
+    ];
+
     protected $casts = [
         'show_score' => 'boolean',
         'shuffle_options' => 'boolean',

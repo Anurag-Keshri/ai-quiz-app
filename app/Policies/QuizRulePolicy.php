@@ -13,7 +13,7 @@ class QuizRulePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class QuizRulePolicy
      */
     public function view(User $user, QuizRule $quizRule): bool
     {
-        //
+        return true; // anyone can view the quiz rules
     }
 
     /**
@@ -29,7 +29,7 @@ class QuizRulePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true; // anyone can create a quiz rule
     }
 
     /**
@@ -37,7 +37,7 @@ class QuizRulePolicy
      */
     public function update(User $user, QuizRule $quizRule): bool
     {
-        //
+        return $user->id === $quizRule->quiz->user_id; // only the owner can update the quiz rules
     }
 
     /**
@@ -45,7 +45,7 @@ class QuizRulePolicy
      */
     public function delete(User $user, QuizRule $quizRule): bool
     {
-        //
+        return $user->id === $quizRule->quiz->user_id; // only the owner can delete the quiz rules
     }
 
     /**
@@ -53,7 +53,7 @@ class QuizRulePolicy
      */
     public function restore(User $user, QuizRule $quizRule): bool
     {
-        //
+        return $user->id === $quizRule->quiz->user_id; // only the owner can restore the quiz rules
     }
 
     /**
@@ -61,6 +61,6 @@ class QuizRulePolicy
      */
     public function forceDelete(User $user, QuizRule $quizRule): bool
     {
-        //
+        return $user->id === $quizRule->quiz->user_id; // only the owner can permanently delete the quiz rules
     }
 }
