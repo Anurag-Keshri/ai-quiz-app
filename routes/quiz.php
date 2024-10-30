@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Quiz\QuizController;
 use App\Http\Controllers\Quiz\QuizRuleController;
+use App\Http\Controllers\Quiz\QuestionController;
 
 Route::middleware('auth')->group(function () {
 	Route::get('/quiz/create', [QuizController::class, 'create'])
@@ -51,4 +52,22 @@ Route::middleware('auth')->group(function () {
 
 	Route::put('/quizzes/{quiz}/rules', [QuizRuleController::class, 'update'])
 		->name('quiz_rules.update');
+
+	Route::get('/quizzes/{quiz}/questions/create', [QuestionController::class, 'create'])
+		->name('questions.create');
+	
+	Route::get('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'show'])
+		->name('questions.show');
+
+	Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])
+		->name('questions.store');
+
+	Route::get('/quizzes/{quiz}/questions/{question}/edit', [QuestionController::class, 'edit'])
+		->name('questions.edit');
+
+	Route::put('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'update'])
+		->name('questions.update');
+
+	Route::delete('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'destroy'])
+		->name('questions.destroy');
 });

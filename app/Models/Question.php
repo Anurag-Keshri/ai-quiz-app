@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Option;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -33,4 +34,12 @@ class Question extends Model
     {
         return $this->hasMany(Option::class);
     }
+
+	/**
+	 * Get the correct option for the question.
+	 */
+	public function getCorrectOption(): Option
+	{
+		return $this->options()->where('is_correct', true)->first();
+	}
 }
