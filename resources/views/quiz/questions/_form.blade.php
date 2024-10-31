@@ -6,7 +6,7 @@
             name="question_text" 
             id="question_text" 
             rows="3" 
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('question_text') border-red-500 @enderror"
+            class="w-full border rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $errors->has('question_text') ? 'border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
             required>{{ old('question_text', $question->question_text ?? '') }}</textarea>
         @error('question_text')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -21,7 +21,7 @@
             name="time_limit" 
             id="time_limit" 
             value="{{ old('time_limit', $question->time_limit ?? '') }}"
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('time_limit') border-red-500 @enderror">
+            class="w-full border rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $errors->has('time_limit') ? 'border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
         @error('time_limit')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror
