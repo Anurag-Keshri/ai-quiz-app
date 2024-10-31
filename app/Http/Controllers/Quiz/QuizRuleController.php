@@ -60,6 +60,7 @@ class QuizRuleController extends Controller
             $validated
         );
 
+
         return redirect()
             ->route('quiz_rules.show', $quiz)
             ->with('success', 'Quiz rules updated successfully');

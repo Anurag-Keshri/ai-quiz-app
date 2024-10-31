@@ -14,7 +14,7 @@ class AttemptController extends Controller
     {
 		// If quiz is provided, show attempts for that quiz
         if ($quiz) {
-			Gate::authorize('viewForQuiz', $quiz);
+			Gate::authorize('viewForQuiz', [Attempt::class, $quiz]);
 
             $attempts = $quiz->attempts()
                 ->with('user')
@@ -27,7 +27,7 @@ class AttemptController extends Controller
             ]);
         }
 
-		Gate::authorize('viewAny');
+		Gate::authorize('viewAny', Attempt::class);
 
         // Otherwise show all attempts by the user
         $attempts = Attempt::query()

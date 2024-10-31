@@ -21,7 +21,7 @@ class QuizRulePolicy
      */
     public function view(User $user, QuizRule $quizRule): bool
     {
-        return true; // anyone can view the quiz rules
+        return $user->id === $quizRule->quiz->user_id; // only the owner can view the quiz rules
     }
 
     /**

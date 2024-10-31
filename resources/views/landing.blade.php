@@ -8,7 +8,7 @@
             <p class="text-center text-neutral-500">Create, take, or view your quizzes</p>
 
             <div class="flex flex-col gap-4 mt-6">
-                <a href="/quiz/create">
+                <a href="/quizzes/create">
                     <x-secondary-button class="w-full h-10">
                         Create Quiz
                     </x-secondary-button>
@@ -30,7 +30,7 @@
                     </div>
                 </form>
 
-                <a href="/quiz/my-quizzes">
+                <a href="/quizzes">
                     <x-secondary-button class="w-full h-10">
                         My Quizzes
                     </x-secondary-button>
@@ -44,7 +44,7 @@
             const quizId = document.getElementById('quiz_id').value;
             const form = document.getElementById('takeQuizForm');
             if (quizId) {
-                form.action = `/quiz/${quizId}/take`;
+                form.action = `/quizzes/${quizId}/attempts/create`;
             }
         }
     </script>

@@ -5,44 +5,28 @@ use App\Http\Controllers\Quiz\QuizController;
 use App\Http\Controllers\Quiz\QuizRuleController;
 use App\Http\Controllers\Quiz\QuestionController;
 use App\Http\Controllers\Quiz\AttemptController;
+
 Route::middleware('auth')->group(function () {
-	Route::get('/quiz/create', [QuizController::class, 'create'])
-		->name('quiz.create');
+	Route::get('/quizzes', [QuizController::class, 'index'])
+		->name('quizzes.index');
 	
-	Route::post('/quiz/create', [QuizController::class, 'store'])
-		->name('quiz.store');
+	Route::get('/quizzes/create', [QuizController::class, 'create'])
+		->name('quizzes.create');
 
-	Route::get('/quiz/{id}/edit', [QuizController::class, 'edit'])
-		->name('quiz.edit');
+	Route::post('/quizzes', [QuizController::class, 'store'])
+		->name('quizzes.store');
 
-	Route::get('/quiz/{id}/view', [QuizController::class, 'show'])
-		->name('quiz.view');
+	Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])
+		->name('quizzes.show');
 
-	Route::get('/quiz/{id}/take', [QuizController::class, 'take'])
-		->name('quiz.take');
+	Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])
+		->name('quizzes.edit');
 
-	Route::get('/quiz/{id}/rules', [QuizController::class, 'rules'])
-		->name('quiz.rules');
-	
-	Route::put('/quiz/{id}/rules', [QuizController::class, 'updateRules'])
-		->name('quiz.update.rules');
-	
-	Route::get('/quiz/my-quizzes', [QuizController::class, 'myQuizzes'])
-		->name('quiz.my-quizzes');
-	
-	
-	Route::post('/quiz/{id}/submit', [QuizController::class, 'submit'])
-		->name('quiz.submit');
+	Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])
+		->name('quizzes.update');
 
-	
-	Route::get('/quiz/{id}/result', [QuizController::class, 'showResults'])
-		->name('quiz.result');
-
-	Route::get('/quiz/{quiz}/responses', [QuizController::class, 'responses'])
-		->name('quiz.responses');
-
-	Route::delete('/quiz/{id}', [QuizController::class, 'destroy'])
-		->name('quiz.destroy');
+	Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])
+		->name('quizzes.destroy');
 
 	Route::get('/quizzes/{quiz}/rules', [QuizRuleController::class, 'show'])
 		->name('quiz_rules.show');

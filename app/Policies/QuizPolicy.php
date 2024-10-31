@@ -13,7 +13,7 @@ class QuizPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class QuizPolicy
      */
     public function view(User $user, Quiz $quiz): bool
     {
-        //
+        return $user->id === $quiz->user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class QuizPolicy
      */
     public function update(User $user, Quiz $quiz): bool
     {
-        //
+        return $user->id === $quiz->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class QuizPolicy
      */
     public function delete(User $user, Quiz $quiz): bool
     {
-        //
+        return $user->id === $quiz->user_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class QuizPolicy
      */
     public function restore(User $user, Quiz $quiz): bool
     {
-        //
+        return $user->id === $quiz->user_id;
     }
 
     /**
@@ -61,6 +61,6 @@ class QuizPolicy
      */
     public function forceDelete(User $user, Quiz $quiz): bool
     {
-        //
+        return $user->id === $quiz->user_id;
     }
 }
