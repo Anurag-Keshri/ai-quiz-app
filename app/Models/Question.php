@@ -42,4 +42,26 @@ class Question extends Model
 	{
 		return $this->options()->where('is_correct', true)->first();
 	}
+
+	/**
+	 * Get the previous question.
+	 */
+	public function previousQuestion(): Question | null
+	{
+		return $this->where('quiz_id', $this->quiz_id)
+					->where('id', '<', $this->id)
+					->orderBy('id', 'desc')
+					->first();
+	}
+
+	/**
+	 * Get the next question.
+	 */
+	public function nextQuestion(): Question | null
+	{
+		return $this->where('quiz_id', $this->quiz_id)
+					->where('id', '>', $this->id)
+					->orderBy('id', 'asc')
+					->first();
+	}
 }

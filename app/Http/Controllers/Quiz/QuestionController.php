@@ -15,7 +15,11 @@ class QuestionController extends Controller
 		// Authorize the request
 		Gate::authorize('view', $question);
 
-        return view('quiz.questions.show', compact('quiz', 'question'));
+		// Get the previous and next question	
+		$previousQuestion = $question->previousQuestion();
+		$nextQuestion = $question->nextQuestion();
+
+        return view('quiz.questions.show', compact('quiz', 'question', 'previousQuestion', 'nextQuestion'));
     }
 
     public function create(Quiz $quiz)
@@ -56,7 +60,7 @@ class QuestionController extends Controller
         }
 
         return redirect()
-            ->route('quiz.questions.show', [$quiz, $question])
+            ->route('questions.show', [$quiz, $question])
             ->with('success', 'Question created successfully');
     }
 
@@ -65,7 +69,11 @@ class QuestionController extends Controller
 		// Authorize the request
 		Gate::authorize('update', $question);
 
-        return view('quiz.questions.edit', compact('quiz', 'question'));
+		// Get the previous and next question	
+		$previousQuestion = $question->previousQuestion();
+		$nextQuestion = $question->nextQuestion();
+
+        return view('quiz.questions.edit', compact('quiz', 'question', 'previousQuestion', 'nextQuestion'));
     }
 
     public function update(Request $request, Quiz $quiz, Question $question)
@@ -100,7 +108,7 @@ class QuestionController extends Controller
         }
 
         return redirect()
-            ->route('quiz.questions.show', [$quiz, $question])
+            ->route('questions.show', [$quiz, $question])
             ->with('success', 'Question updated successfully');
     }
 
