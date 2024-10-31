@@ -30,6 +30,10 @@
         background-color: #5cb85c;
     }
 
+    .alert-info {
+        background-color: #5bc0de;
+    }
+
     .alert .close-btn {
         background: none;
         border: none;
@@ -70,19 +74,27 @@
     </div>
 @endif
 
+@if (session('info'))
+    <div class="alert alert-info" id="alert-info" role="alert">
+        {{ session('info') }}
+        <button class="close-btn" onclick="this.parentElement.style.display='none';">×</button>
+    </div>
+@endif
+
 @if (session('success'))
     <div class="alert alert-success" id="alert-success" role="alert">
         {{ session('success') }}
         <button class="close-btn" onclick="this.parentElement.style.display='none';">×</button>
     </div>
 @endif
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             const alertWarning = document.getElementById('alert-warning');
             const alertDanger = document.getElementById('alert-danger');
             const alertSuccess = document.getElementById('alert-success');
-
+            const alertInfo = document.getElementById('alert-info');
             // Function to handle fading out
             function fadeOut(element) {
                 if (element) {
@@ -96,6 +108,7 @@
             fadeOut(alertWarning);
             fadeOut(alertDanger);
             fadeOut(alertSuccess);
+            fadeOut(alertInfo);
         }, 5000); // 5 seconds
     });
 </script>

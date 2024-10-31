@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Quiz\QuizController;
 use App\Http\Controllers\Quiz\QuizRuleController;
 use App\Http\Controllers\Quiz\QuestionController;
-
+use App\Http\Controllers\Quiz\AttemptController;
 Route::middleware('auth')->group(function () {
 	Route::get('/quiz/create', [QuizController::class, 'create'])
 		->name('quiz.create');
@@ -70,4 +70,25 @@ Route::middleware('auth')->group(function () {
 
 	Route::delete('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'destroy'])
 		->name('questions.destroy');
+
+	Route::get('/attempts', [AttemptController::class, 'index'])
+		->name('attempts.index');
+	
+	Route::get('/quizzes/{quiz}/attempts', [AttemptController::class, 'index'])
+		->name('attempts.index');
+
+	Route::get('/quizzes/{quiz}/attempts/create', [AttemptController::class, 'create'])
+		->name('attempts.create');
+
+	Route::post('/quizzes/{quiz}/attempts', [AttemptController::class, 'store'])
+		->name('attempts.store');
+
+	Route::get('/quizzes/{quiz}/attempts/{attempt}', [AttemptController::class, 'show'])
+		->name('attempts.show');
+
+	Route::delete('/quizzes/{quiz}/attempts/{attempt}', [AttemptController::class, 'destroy'])
+		->name('attempts.destroy');
+
+	Route::post('/quizzes/{quiz}/attempts/{attempt}/submit', [AttemptController::class, 'submit'])
+		->name('attempts.submit');
 });
