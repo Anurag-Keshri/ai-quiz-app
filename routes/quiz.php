@@ -91,4 +91,8 @@ Route::middleware('auth')->group(function () {
 
 	Route::post('/quizzes/{quiz}/attempts/{attempt}/submit', [AttemptController::class, 'submit'])
 		->name('attempts.submit');
+	
+	Route::fallback(function () {
+		abort(404);
+	});
 });
