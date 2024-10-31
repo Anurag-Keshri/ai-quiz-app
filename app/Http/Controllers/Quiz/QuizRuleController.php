@@ -18,7 +18,7 @@ class QuizRuleController extends Controller
 		// Get or create the quiz rules
         $quizRules = $quiz->rules ?? new QuizRule(['quiz_id' => $quiz->id]);
 
-        return view('quiz-rules.show', compact('quiz', 'quizRules'));
+        return view('quiz.quiz-rules.show', compact('quiz', 'quizRules'));
     }
 
     public function edit(Quiz $quiz)
@@ -29,7 +29,7 @@ class QuizRuleController extends Controller
 		// Get or create the quiz rules
         $quizRules = $quiz->rules ?? new QuizRule(['quiz_id' => $quiz->id]);
 
-        return view('quiz-rules.edit', compact('quiz', 'quizRules'));
+        return view('quiz.quiz-rules.edit', compact('quiz', 'quizRules'));
     }
 
     public function update(Request $request, Quiz $quiz)
@@ -61,7 +61,7 @@ class QuizRuleController extends Controller
         );
 
         return redirect()
-            ->route('quiz_rules.show', $quiz)
+            ->route('quiz.quiz-rules.show', $quiz)
             ->with('success', 'Quiz rules updated successfully');
     }
 }

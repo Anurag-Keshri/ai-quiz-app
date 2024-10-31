@@ -21,7 +21,7 @@ class AttemptController extends Controller
                 ->latest()
                 ->paginate(10);
             
-            return view('attempts.index', [
+            return view('quiz.attempts.index', [
                 'attempts' => $attempts,
                 'quiz' => $quiz,
             ]);
@@ -36,7 +36,7 @@ class AttemptController extends Controller
             ->latest()
             ->paginate(10);
         
-        return view('attempts.index', ['attempts' => $attempts]);
+        return view('quiz.attempts.index', ['attempts' => $attempts]);
     }
 
     public function create(Quiz $quiz)
@@ -70,7 +70,7 @@ class AttemptController extends Controller
 				->with('info', 'You have an attempt that is not completed. Redirecting to it now.');
 		}
 
-        return view('attempts.create', ['quiz' => $quiz]);
+        return view('quiz.attempts.create', ['quiz' => $quiz]);
     }
 
     public function store(Request $request, Quiz $quiz)
@@ -95,7 +95,7 @@ class AttemptController extends Controller
 
         $attempt->load(['answers.option.question.options']);
         
-        return view('attempts.show', [
+        return view('quiz.attempts.show', [
             'quiz' => $quiz,
             'attempt' => $attempt,
         ]);
@@ -146,6 +146,6 @@ class AttemptController extends Controller
 
         $attempt->delete();
 
-        return redirect()->route('attempts.index', ['quiz' => $quiz]);
+        return redirect()->route('quiz.attempts.index', ['quiz' => $quiz]);
     }
 }

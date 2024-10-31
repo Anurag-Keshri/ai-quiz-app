@@ -15,7 +15,7 @@ class QuestionController extends Controller
 		// Authorize the request
 		Gate::authorize('view', $question);
 
-        return view('questions.show', compact('quiz', 'question'));
+        return view('quiz.questions.show', compact('quiz', 'question'));
     }
 
     public function create(Quiz $quiz)
@@ -24,7 +24,7 @@ class QuestionController extends Controller
 		Gate::authorize('create', [Question::class, $quiz]);
 
 
-        return view('questions.create', compact('quiz'));
+        return view('quiz.questions.create', compact('quiz'));
     }
 
     public function store(Request $request, Quiz $quiz)
@@ -56,7 +56,7 @@ class QuestionController extends Controller
         }
 
         return redirect()
-            ->route('questions.show', [$quiz, $question])
+            ->route('quiz.questions.show', [$quiz, $question])
             ->with('success', 'Question created successfully');
     }
 
@@ -65,7 +65,7 @@ class QuestionController extends Controller
 		// Authorize the request
 		Gate::authorize('update', $question);
 
-        return view('questions.edit', compact('quiz', 'question'));
+        return view('quiz.questions.edit', compact('quiz', 'question'));
     }
 
     public function update(Request $request, Quiz $quiz, Question $question)
@@ -100,7 +100,7 @@ class QuestionController extends Controller
         }
 
         return redirect()
-            ->route('questions.show', [$quiz, $question])
+            ->route('quiz.questions.show', [$quiz, $question])
             ->with('success', 'Question updated successfully');
     }
 
