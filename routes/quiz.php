@@ -7,74 +7,48 @@ use App\Http\Controllers\Quiz\QuestionController;
 use App\Http\Controllers\Quiz\AttemptController;
 
 Route::middleware('auth')->group(function () {
-	Route::get('/quizzes', [QuizController::class, 'index'])
-		->name('quizzes.index');
+	// Quiz
+	Route::prefix('quizzes')->name('quizzes.')->group(function () {
+		Route::get('/', [QuizController::class, 'index'])->name('index');
+		Route::post('/', [QuizController::class, 'store'])->name('store');
+		Route::get('/create', [QuizController::class, 'create'])->name('create');
+		Route::get('/{quiz}', [QuizController::class, 'show'])->name('show');
+		Route::put('/{quiz}', [QuizController::class, 'update'])->name('update');
+		Route::delete('/{quiz}', [QuizController::class, 'destroy'])->name('destroy');
+		Route::get('/{quiz}/edit', [QuizController::class, 'edit'])->name('edit');
+	});
+
+	// Quiz Rules
+	Route::prefix('quizzes/{quiz}')->name('quiz_rules.')->group(function () {
+		Route::get('/rules', [QuizRuleController::class, 'show'])->name('show');
+		Route::put('/rules', [QuizRuleController::class, 'update'])->name('update');
+		Route::get('/rules/edit', [QuizRuleController::class, 'edit'])->name('edit');
+	});
 	
-	Route::get('/quizzes/create', [QuizController::class, 'create'])
-		->name('quizzes.create');
+	// Questions
+	Route::prefix('quizzes/{quiz}')->name('questions.')->group(function () {
+		Route::post('/questions', [QuestionController::class, 'store'])->name('store');
+		Route::get('/questions/create', [QuestionController::class, 'create'])->name('create');
+		Route::get('/questions/{question}', [QuestionController::class, 'show'])->name('show');
+		Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('update');
+		Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('destroy');
+		Route::get('/questions/{question}/edit', [QuestionController::class, 'edit'])->name('edit');
+	});
 
-	Route::post('/quizzes', [QuizController::class, 'store'])
-		->name('quizzes.store');
+	// Attempts (Quiz Attempts)
+	Route::prefix('quizzes/{quiz}')->name('attempts.')->group(function () {
+		Route::get('/attempts', [AttemptController::class, 'index'])->name('index');
+		Route::get('/attempts/create', [AttemptController::class, 'create'])->name('create');
+		Route::post('/attempts', [AttemptController::class, 'store'])->name('store');
+		Route::get('/attempts/{attempt}', [AttemptController::class, 'show'])->name('show');
+		Route::delete('/attempts/{attempt}', [AttemptController::class, 'destroy'])->name('destroy');
+		Route::post('/attempts/{attempt}/submit', [AttemptController::class, 'submit'])->name('submit');
+	});
 
-	Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])
-		->name('quizzes.show');
-
-	Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])
-		->name('quizzes.edit');
-
-	Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])
-		->name('quizzes.update');
-
-	Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])
-		->name('quizzes.destroy');
-
-	Route::get('/quizzes/{quiz}/rules', [QuizRuleController::class, 'show'])
-		->name('quiz_rules.show');
-
-	Route::get('/quizzes/{quiz}/rules/edit', [QuizRuleController::class, 'edit'])
-		->name('quiz_rules.edit');
-
-	Route::put('/quizzes/{quiz}/rules', [QuizRuleController::class, 'update'])
-		->name('quiz_rules.update');
-
-	Route::get('/quizzes/{quiz}/questions/create', [QuestionController::class, 'create'])
-		->name('questions.create');
-	
-	Route::get('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'show'])
-		->name('questions.show');
-
-	Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])
-		->name('questions.store');
-
-	Route::get('/quizzes/{quiz}/questions/{question}/edit', [QuestionController::class, 'edit'])
-		->name('questions.edit');
-
-	Route::put('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'update'])
-		->name('questions.update');
-
-	Route::delete('/quizzes/{quiz}/questions/{question}', [QuestionController::class, 'destroy'])
-		->name('questions.destroy');
-
-	Route::get('/attempts', [AttemptController::class, 'index'])
-		->name('attempts.index');
-	
-	Route::get('/quizzes/{quiz}/attempts', [AttemptController::class, 'index'])
-		->name('attempts.index');
-
-	Route::get('/quizzes/{quiz}/attempts/create', [AttemptController::class, 'create'])
-		->name('attempts.create');
-
-	Route::post('/quizzes/{quiz}/attempts', [AttemptController::class, 'store'])
-		->name('attempts.store');
-
-	Route::get('/quizzes/{quiz}/attempts/{attempt}', [AttemptController::class, 'show'])
-		->name('attempts.show');
-
-	Route::delete('/quizzes/{quiz}/attempts/{attempt}', [AttemptController::class, 'destroy'])
-		->name('attempts.destroy');
-
-	Route::post('/quizzes/{quiz}/attempts/{attempt}/submit', [AttemptController::class, 'submit'])
-		->name('attempts.submit');
+	// Attempts (User Attempts)
+	Route::prefix('attempts')->name('attempts.')->group(function () {
+		Route::get('/', [AttemptController::class, 'index'])->name('index');
+	});
 	
 	Route::fallback(function () {
 		abort(404);
