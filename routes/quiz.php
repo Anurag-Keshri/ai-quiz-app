@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
 	// Attempts (Quiz Attempts)
 	Route::prefix('quizzes/{quiz}')->name('attempts.')->group(function () {
-		Route::get('/attempts', [AttemptController::class, 'index'])->name('index');
+		Route::get('/attempts', [AttemptController::class, 'index'])->name('indexForQuiz');
 		Route::get('/attempts/create', [AttemptController::class, 'create'])->name('create');
 		Route::post('/attempts', [AttemptController::class, 'store'])->name('store');
 		Route::get('/attempts/{attempt}', [AttemptController::class, 'show'])->name('show');

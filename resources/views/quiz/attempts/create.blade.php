@@ -1,32 +1,119 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="py-12 text-gray-900">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <h2 class="text-2xl font-bold mb-4">Start Quiz: {{ $quiz->title }}</h2>
-                    
-                    <div class="mb-6">
-                        <h3 class="font-semibold mb-2">Quiz Rules:</h3>
-                        <ul class="list-disc list-inside space-y-2">
-                            <li>You will have {{ $quiz->rules->time_limit ?? 'unlimited' }} minutes to complete this quiz</li>
-                            <li>There are {{ $quiz->questions->count() }} questions in total</li>
-                            @if($quiz->rules->minimum_score)
-                                <li>Minimum score required to pass: {{ $quiz->rules->minimum_score }}%</li>
-                            @endif
-                        </ul>
-                    </div>
-
-                    <form method="POST" action="{{ route('attempts.store', $quiz) }}">
-                        @csrf
-                        <button type="submit" 
-                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                            Start Quiz
-                        </button>
-                    </form>
+<div class="min-h-[calc(100vh-73px)] bg-base-200 py-4">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
+                    <p class="text-base-content/70">Ready to start the quiz?</p>
                 </div>
+            </div>
+
+            <!-- Quiz Info Card -->
+            <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Time Limit -->
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-medium">Time Limit</div>
+                                <div class="text-sm text-base-content/70">
+                                    {{ $quiz->rules->time_limit ? $quiz->rules->time_limit . ' minutes' : 'No time limit' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Questions Count -->
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-medium">Questions</div>
+                                <div class="text-sm text-base-content/70">
+                                    {{ $quiz->questions->count() }} questions
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Passing Score -->
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-medium">Passing Score</div>
+                                <div class="text-sm text-base-content/70">
+                                    {{ $quiz->rules->minimum_score ?? 'No' }} minimum score
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Rules Card -->
+            <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body">
+                    <h2 class="card-title text-lg mb-4">Quiz Rules</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @foreach([
+                            ['Show Score', 'You will see your score after submission', $quiz->rules->show_score],
+                            ['Shuffle Questions', 'Questions appear in random order', $quiz->rules->shuffle_questions],
+                            ['Shuffle Options', 'Answer options are randomized', $quiz->rules->shuffle_options],
+                            ['Show Answers', 'Correct answers shown after completion', $quiz->rules->show_correct_answer]
+                        ] as [$title, $description, $enabled])
+                            <div class="flex items-start gap-3">
+                                <div class="mt-1">
+                                    @if($enabled)
+                                        <div class="badge badge-success badge-sm gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    @else
+                                        <div class="badge badge-ghost badge-sm gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div>
+                                    <div class="font-medium">{{ $title }}</div>
+                                    <div class="text-sm text-base-content/70">{{ $description }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Quiz Button -->
+            <div class="flex justify-end">
+                <form method="POST" action="{{ route('attempts.store', $quiz) }}">
+                    @csrf
+                    <button type="submit" 
+                            class="btn btn-primary"
+                            onclick="return confirm('Are you ready to start the quiz? The timer will begin immediately.')">
+                        Start Quiz
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 @endsection

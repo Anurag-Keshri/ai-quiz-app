@@ -1,70 +1,201 @@
 @extends('layouts.app', ['navTitle' => 'Create Quiz'])
 
-@section('header')
-    <h1 class="text-2xl font-bold">Create a New Quiz</h1>
-@endsection
-
 @section('content')
-    <div class="flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 rounded-lg p-4 mt-2">
+<div class="min-h-screen">
+    <div class="container mx-auto p-4">
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-8">
+            <h1 class="text-4xl font-bold mb-4">Create a New Quiz</h1>
+            <p class="text-base-content/70">
+                Generate an AI-powered quiz by providing a topic and configuring your preferences below.
+            </p>
+        </div>
 
-
-			
-			
-
-            <form action="{{ route('quizzes.store') }}" method="POST" id="quizForm" class="space-y-4">
+        <div class="max-w-4xl mx-auto">
+            <form action="{{ route('quizzes.store') }}" method="POST" class="space-y-6">
                 @csrf
 
-                <div id="tab1" class="tab-content">
-                    <!-- Number of Questions and Options -->
-                    <div class="mb-4 flex space-x-4">
-                        <div class="flex-1">
-                            <x-input-label for="questions" :value="__('Number of Questions:')" />
-                            <input type="number" id="questions" name="number_of_questions" min="1" required value="10" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                <!-- Basic Information Card -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center gap-2 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            <h2 class="card-title text-2xl">Basic Information</h2>
                         </div>
-                        <div class="flex-1">
-                            <x-input-label for="options" :value="__('Options per Question:')" />
-                            <input type="number" id="options" name="number_of_options" min="2" required value="4" class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
+                        
+                        <!-- Title -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Quiz Title</span>
+                                <span class="label-text-alt text-error">Required</span>
+                            </label>
+                            <input type="text" 
+                                   name="title" 
+                                   class="input input-bordered @error('title') input-error @enderror" 
+                                   value="{{ old('title') }}"
+                                   placeholder="Enter a descriptive title for your quiz"
+                            />
+                            @error('title')
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ $message }}</span>
+                                </label>
+                            @enderror
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Description</span>
+                                <span class="label-text-alt text-error">Required</span>
+                            </label>
+                            <textarea name="description" 
+                                      class="textarea textarea-bordered h-24 @error('description') textarea-error @enderror"
+                                      placeholder="Provide a brief description of what this quiz is about"
+                            >{{ old('description') }}</textarea>
+                            @error('description')
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ $message }}</span>
+                                </label>
+                            @enderror
                         </div>
                     </div>
+                </div>
 
-                    <!-- Difficulty Level -->
-                    <div class="mb-4">
-                        <x-input-label for="difficulty" :value="__('Difficulty Level:')" />
-                        <select name="difficulty" id="difficulty" required class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                        </select>
+                <!-- Quiz Configuration Card -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center gap-2 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <h2 class="card-title text-2xl">Quiz Configuration</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Number of Questions -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Number of Questions</span>
+                                </label>
+								<input type="number" 
+										name="number_of_questions" 
+										id="number_of_questions"
+										class="input input-bordered join-item w-full  @error('questions') input-error @enderror"
+										value="{{ old('questions', 5) }}"
+										min="1"
+										max="20"
+								/>
+                                @error('questions')
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ $message }}</span>
+                                    </label>
+                                @enderror
+                            </div>
+
+                            <!-- Options per Question -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Options per Question</span>
+                                </label>
+                                    <input type="number" 
+                                           name="number_of_options" 
+                                           id="number_of_options"
+                                           class="input input-bordered join-item w-full @error('options') input-error @enderror"
+                                           value="{{ old('options', 4) }}"
+                                           min="2"
+                                           max="6"
+                                    />
+                                @error('options')
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ $message }}</span>
+                                    </label>
+                                @enderror
+                            </div>
+
+                            <!-- Difficulty Level -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Difficulty Level</span>
+                                </label>
+                                <select name="difficulty" class="select select-bordered w-full @error('difficulty') select-error @enderror">
+                                    <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>Easy</option>
+                                    <option value="medium" {{ old('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
+                                    <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
+                                </select>
+                                @error('difficulty')
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ $message }}</span>
+                                    </label>
+                                @enderror
+                            </div>
+
+                            <!-- Depth Level -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Knowledge Depth</span>
+                                </label>
+                                <select name="depth" class="select select-bordered w-full @error('depth') select-error @enderror">
+                                    <option value="basic" {{ old('depth') == 'basic' ? 'selected' : '' }}>Basic Understanding</option>
+                                    <option value="intermediate" {{ old('depth') == 'intermediate' ? 'selected' : '' }}>Intermediate Knowledge</option>
+                                    <option value="advanced" {{ old('depth') == 'advanced' ? 'selected' : '' }}>Advanced Concepts</option>
+                                </select>
+                                @error('depth')
+                                    <label class="label">
+                                        <span class="label-text-alt text-error">{{ $message }}</span>
+                                    </label>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Depth Level -->
-                    <div class="mb-4">
-                        <x-input-label for="depth" :value="__('Depth Level:')" />
-                        <select name="depth" id="depth" required class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200">
-                            <option value="shallow">Shallow</option>
-                            <option value="deep">Deep</option>
-                        </select>
+                <!-- Topic Card -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center gap-2 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h2 class="card-title text-2xl">Quiz Topic</h2>
+                        </div>
+                        
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Topic or Subject Matter</span>
+                                <span class="label-text-alt text-error">Required</span>
+                            </label>
+                            <textarea name="topic" 
+                                      class="textarea textarea-bordered h-32 @error('topic') textarea-error @enderror"
+                                      placeholder="Describe the topic or subject matter for your quiz. Be as specific as possible. For example: 'The history of Ancient Egypt, focusing on the Old Kingdom period, pyramids, and pharaohs.'">{{ old('topic') }}</textarea>
+                            @error('topic')
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ $message }}</span>
+                                </label>
+                            @enderror
+                            <label class="label">
+                                <span class="label-text-alt">The more specific and detailed your topic description, the better the generated questions will be.</span>
+                            </label>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Topic (Prompt) -->
-                    <div class="mb-4">
-                        <x-input-label for="topic" :value="__('Topic (Prompt):')" />
-                        <textarea id="topic" name="topic" rows="3" placeholder="Enter the topic or prompt for the quiz"  class="block w-full mt-1 p-2 border border-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-200"></textarea>
-                    </div>
-
-                    <!-- Next Button -->
-                    <div class="mb-4">
-                        <x-primary-button type="submit" class="w-full" id="nextButton">
-                            Next
-                        </x-primary-button>
+                <!-- Submit Button -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body">
+                        <div class="flex flex-col gap-4">
+                            <button type="submit" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Generate Quiz
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
-
-
-
+</div>
 @endsection
