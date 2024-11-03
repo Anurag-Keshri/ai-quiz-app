@@ -55,9 +55,10 @@
 			<!-- Search and Filter -->
 			<div class="join">
 				<input disabled type="text" placeholder="Search In development..." class="input input-bordered join-item" />
-				<label class="btn join-item">
-					<span class="text-xs">My Quizzes</span>
-					<input type="checkbox" class="toggle toggle-sm" checked="checked" />
+				<label class="btn join-item" x-data="{myQuizzes : false}" @click="$dispatch('notify', {myQuizzes})">
+					<span x-show="!myQuizzes" class="text-xs">My Quizzes</span>
+					<span x-show="myQuizzes" class="text-xs">All Quizzes</span>
+					<input type="checkbox" class="toggle toggle-sm" x-model="myQuizzes" />
 				</label>
 			</div>
 

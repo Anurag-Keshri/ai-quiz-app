@@ -22,14 +22,9 @@
 						</tr>
 					</thead>
 					<!-- body -->
-					<tbody x-data="{
-						quizzes: @json($quizzes),
-					}">
-						<template x-for="quiz in quizzes" :key="quiz.id">
-							
-						</template>
+					<tbody x-data="{myQuizzes: true}" @notify.window="myQuizzes = $event.detail.myQuizzes">
 						@foreach($quizzes as $index => $quiz)
-							<tr class="hover">
+							<tr x-data x-show="myQuizzes || {{auth()->user()->id === $quiz->author->id ? 'true' : 'false'}}" class="hover">
 								<td>
 									<a class="link link-hover link-primary" href="{{ route('quizzes.show', $quiz) }}">
 										<div class="font-medium">{{ $quiz->title }}</div>
