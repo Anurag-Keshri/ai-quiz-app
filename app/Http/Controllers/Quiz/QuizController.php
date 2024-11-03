@@ -34,6 +34,8 @@ class QuizController extends Controller
 
 		// Validate the form input
 		$request->validate([
+			'title' => 'required|string|max:255',
+			'description' => 'required|string|max:1000',
 			'topic' => 'required|string|max:255', 
 			'number_of_questions' => 'required|integer|min:1',
 			'number_of_options' => 'required|integer|min:2',
@@ -43,8 +45,8 @@ class QuizController extends Controller
 
 		// Create the quiz
         $quiz = Auth::user()->quizzes()->create([
-			'title' => $request->input('topic'),
-			'description' => 'No description provided.',
+			'title' => $request->input('title'),
+			'description' => $request->input('description'),
 		]);
 
 		// Create default quiz rules
@@ -65,33 +67,38 @@ class QuizController extends Controller
 			'depth' => $request->input('depth'),
 		];
 
-		// Fetch questions from backend api
-		$response = Http::withHeaders([
+		try {
+			// Fetch questions from backend api
+			$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
-			'x-api-key' => env('AI_QUIZ_API_KEY'),
-		])->post(env('AI_QUIZ_API_URL'), $formData);
+				'x-api-key' => env('AI_QUIZ_API_KEY'),
+			])->post(env('AI_QUIZ_API_URL'), $formData);
 
 
-		if ($response->successful()) {
-			$rawQuestions = $response->json();
+			if ($response->successful()) {
+				$rawQuestions = $response->json();
 
-			foreach ($rawQuestions as $rawQuestion) {
-				$question = Question::create([
-					'quiz_id' => $quiz->id,
-					'question_text' => $rawQuestion['question'],
-				]);
-
-				foreach ($rawQuestion['options'] as $index => $option) {
-					Option::create([
-						'question_id' => $question->id,
-						'option_text' => $option,
-						'is_correct' => $index === $rawQuestion['correctAnswer'],
+				foreach ($rawQuestions as $rawQuestion) {
+					$question = Question::create([
+						'quiz_id' => $quiz->id,
+						'question_text' => $rawQuestion['question'],
 					]);
+
+					foreach ($rawQuestion['options'] as $index => $option) {
+						Option::create([
+							'question_id' => $question->id,
+							'option_text' => $option,
+							'is_correct' => $index === $rawQuestion['correctAnswer'],
+						]);
+					}
 				}
+			} else {
+				$quiz->delete();
+				return redirect()->back()->with('error', 'Failed to fetch questions from AI-Quiz-API.');
 			}
-		} else {
+		} catch (\Exception $e) {
 			$quiz->delete();
-			return redirect()->back()->with('error', 'Failed to fetch questions from AI-Quiz-API.');
+			return redirect()->back()->with('error', 'Error creating quiz. ' . $e->getMessage());
 		}
 
         return redirect()->route('quiz_rules.edit', $quiz)
