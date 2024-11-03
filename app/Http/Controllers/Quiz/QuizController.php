@@ -209,7 +209,7 @@ class QuizController extends Controller
 
         $quiz->delete();
 
-        return redirect()->route('quizzes.index')
+        return redirect()->back()
             ->with('success', 'Quiz deleted successfully.');
     }
 } 
