@@ -19,7 +19,7 @@ class QuizController extends Controller
     {
 		Gate::authorize('viewAny', Quiz::class);
 
-		$quizzes = $authUserQuizzes = Auth::user()->quizzes()->latest()->paginate(10);
+		$quizzes = $authUserQuizzes = Quiz::latest()->paginate(10);
 
         return view('quiz.quizzes.index', compact('quizzes', 'authUserQuizzes'));
     }

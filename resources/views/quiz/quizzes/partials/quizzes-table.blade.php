@@ -1,24 +1,5 @@
-<!-- Actions Bar -->
-@if(!$quizzes->isEmpty())
-	<div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
-		<!-- Search and Filter -->
-		<div class="join">
-			<input disabled type="text" placeholder="Search In development..." class="input input-bordered join-item" />
-
-		</div>
-
-		<!-- Create New Quiz Button -->
-		<a href="{{ route('quizzes.create') }}" class="btn btn-primary">
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-			</svg>
-			Create Quiz
-		</a>
-	</div>
-@endif
-
 <div class="mb-16">
-	@if($authUserQuizzes->isEmpty())
+	@if($quizzes->isEmpty())
 		<div class="card bg-base-100 shadow-xl border border-base-300">
 			<div class="card-body items-center text-center">
 				<h3 class="card-title text-2xl mb-4">No Quizzes Yet</h3>
@@ -41,11 +22,18 @@
 						</tr>
 					</thead>
 					<!-- body -->
-					<tbody>
-						@foreach($authUserQuizzes as $index => $quiz)
+					<tbody x-data="{
+						quizzes: @json($quizzes),
+					}">
+						<template x-for="quiz in quizzes" :key="quiz.id">
+							
+						</template>
+						@foreach($quizzes as $index => $quiz)
 							<tr class="hover">
 								<td>
-									<div class="font-medium">{{ $quiz->title }}</div>
+									<a class="link link-hover link-primary" href="{{ route('quizzes.show', $quiz) }}">
+										<div class="font-medium">{{ $quiz->title }}</div>
+									</a>
 									@if($quiz->description)
 										<div class="text-sm text-base-content/70 hidden md:table-cell">{{ Str::limit($quiz->description, 60) }}</div>
 									@endif
@@ -74,14 +62,14 @@
 										<!-- Desktop Actions -->
 										<div class="hidden sm:flex items-center gap-2">
 											<a href="{{ route('attempts.create', $quiz) }}" 
-											   class="btn btn-outline btn-sm">
+											   class="btn btn-neutral btn-sm">
 												<span class="hidden xl:inline">Take Quiz</span>
 												<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 												</svg>
 											</a>
 
-											<a href="{{ route('quizzes.edit', $quiz) }}" 
+											<a @disabled(Gate::denies('update', $quiz)) href="{{ route('quizzes.edit', $quiz) }}" 
 											   class="btn btn-outline btn-sm">
 												<span class="hidden xl:inline">Edit</span>
 												<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,40 +95,51 @@
 														Take Quiz
 													</a>
 												</li>
-												<li class="md:hidden">
-													<a href="{{ route('quizzes.edit', $quiz) }}" class="flex items-center gap-2">
-														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-														</svg>
-														Edit Quiz
-													</a>
-												</li>
-
-												<!-- Always visible in dropdown -->
-												<li>
-													<a href="{{ route('attempts.index', $quiz) }}" class="flex items-center gap-2">
-														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-														</svg>
-														View Results
-													</a>
-												</li>
-												<div class="divider my-1"></div>
-												<li>
-													<form action="{{ route('quizzes.destroy', $quiz) }}" 
-														  method="POST" 
-														  onsubmit="return confirm('Are you sure you want to delete this quiz?');"
-														  class="w-full">
-														@csrf
-														@method('DELETE')
-														<button type="submit" class="flex items-center gap-2 text-error hover:bg-error/10">
+												@if(Gate::allows('update', $quiz))
+													<li class="md:hidden">
+														<a href="{{ route('quizzes.edit', $quiz) }}" class="flex items-center gap-2">
 															<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 															</svg>
-															Delete Quiz
-														</button>
-													</form>
-												</li>
+															Edit Quiz
+														</a>
+													</li>
+
+													<!-- Always visible in dropdown -->
+													<li>
+														<a href="{{ route('attempts.indexForQuiz', $quiz) }}" class="flex items-center gap-2">
+															<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+															</svg>
+															View Results
+														</a>
+													</li>
+													<div class="divider my-1"></div>
+													<li>
+														<form action="{{ route('quizzes.destroy', $quiz) }}" 
+															method="POST" 
+															onsubmit="return confirm('Are you sure you want to delete this quiz?');"
+															class="w-full">
+															@csrf
+															@method('DELETE')
+															<button type="submit" class="flex items-center gap-2 text-error hover:bg-error/10">
+																<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+																</svg>
+																Delete Quiz
+															</button>
+														</form>
+													</li>
+												@else
+													<li class="hidden md:block">
+														<a href="{{ route('attempts.create', $quiz) }}" class="flex items-center gap-2">
+															<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+															</svg>
+															Take Quiz
+														</a>
+													</li>
+												@endif
 											</ul>
 										</div>
 									</div>

@@ -12,21 +12,17 @@ class HomeController extends Controller
 {
     public function index()
     {
-		$totalQuizzes = 0;
-		$totalAttempts = 0;
-		$totalUsers = 0;
-		$recentQuizzes = [];
+		$totalQuizzes = Quiz::count();
+		$totalAttempts = Attempt::count();
+		$totalUsers = User::count();
+		$quizzes = [];
 		$authUserQuizzes = [];
 
-		// If user is logged in, get the total quizzes, attempts and users
 		if (Auth::check()) {
-			$totalQuizzes = Quiz::count();
-			$totalAttempts = Attempt::count();
-			$totalUsers = User::count();
-			$recentQuizzes = Quiz::orderBy('created_at', 'desc')->take(5)->get();
+			$quizzes = Quiz::latest()->take(5)->get();
 			$authUserQuizzes = Auth::user()->quizzes;
 		}
 
-        return view('home.index', compact('totalQuizzes', 'totalUsers', 'totalAttempts', 'recentQuizzes', 'authUserQuizzes'));
+        return view('home.index', compact('totalQuizzes', 'totalUsers', 'totalAttempts', 'quizzes', 'authUserQuizzes'));
     }
 }

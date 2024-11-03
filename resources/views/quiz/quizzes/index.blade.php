@@ -49,6 +49,29 @@
             </div>
         </div>
     @else
+	<!-- Actions Bar -->
+		@if(!$quizzes->isEmpty())
+		<div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
+			<!-- Search and Filter -->
+			<div class="join">
+				<input disabled type="text" placeholder="Search In development..." class="input input-bordered join-item" />
+				<label class="btn join-item">
+					<span class="text-xs">My Quizzes</span>
+					<input type="checkbox" class="toggle toggle-sm" checked="checked" />
+				</label>
+			</div>
+
+			<!-- Create New Quiz Button -->
+			<div class="flex items-center gap-2">
+				<a href="{{ route('quizzes.create') }}" class="btn btn-primary">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+					</svg>
+					Create Quiz
+				</a>
+			</div>
+		</div>
+		@endif
 		@include('quiz.quizzes.partials.quizzes-table')
     @endif
 </div>
