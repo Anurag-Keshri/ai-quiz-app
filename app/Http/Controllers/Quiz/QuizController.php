@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Quiz;
 
+use App\Models\User;
 use App\Models\Quiz;
 use App\Models\Option;
+use App\Models\Attempt;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,8 +19,9 @@ class QuizController extends Controller
     {
 		Gate::authorize('viewAny', Quiz::class);
 
-        $quizzes = Auth::user()->quizzes()->latest()->paginate(10);
-        return view('quiz.quizzes.index', compact('quizzes'));
+		$quizzes = $authUserQuizzes = Auth::user()->quizzes()->latest()->paginate(10);
+
+        return view('quiz.quizzes.index', compact('quizzes', 'authUserQuizzes'));
     }
 
     public function create()
