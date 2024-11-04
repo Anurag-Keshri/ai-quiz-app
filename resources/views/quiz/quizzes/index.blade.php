@@ -14,7 +14,7 @@
 <div class="container mx-auto p-4">
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="stats shadow bg-base-200">
+        <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Quizzes</div>
                 <div class="stat-value">{{ $quizzes->count() }}</div>
@@ -22,7 +22,7 @@
             </div>
         </div>
         
-        <div class="stats shadow bg-base-200">
+        <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Questions</div>
                 <div class="stat-value">{{ $questionCount }}</div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="stats shadow bg-base-200">
+        <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Attempts</div>
                 <div class="stat-value">{{ $attemptCount }}</div>
@@ -49,13 +49,13 @@
             </div>
         </div>
     @else
-	<!-- Actions Bar -->
+		<!-- Actions Bar -->
 		@if(!$quizzes->isEmpty())
 		<div class="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6">
 			<!-- Search and Filter -->
 			<div class="join">
-				<input disabled type="text" placeholder="Search In development..." class="input input-bordered join-item" />
-				<label class="btn join-item" x-data="{myQuizzes : false}" @click="$dispatch('notify', {myQuizzes})">
+				<button disabled class="btn join-item bg-base-100">Search In development...</button>
+				<label class="btn join-item bg-base-100" x-data="{myQuizzes : false}" @click="$dispatch('notify', {myQuizzes})">
 					<span x-show="!myQuizzes" class="text-xs">My Quizzes</span>
 					<span x-show="myQuizzes" class="text-xs">All Quizzes</span>
 					<input type="checkbox" class="toggle toggle-sm" x-model="myQuizzes" />

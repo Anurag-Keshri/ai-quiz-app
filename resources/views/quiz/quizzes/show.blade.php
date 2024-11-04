@@ -12,20 +12,17 @@
                         <h1 class="text-3xl font-bold mb-4">{{ $quiz->title }}</h1>
                         <p class="text-base-content/70 mb-4">{{ $quiz->description }}</p>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <div class="badge badge-outline">{{ $quiz->questions->count() }} Questions</div>
-                            @if($quiz->difficulty)
-                                <div class="badge badge-{{ $quiz->difficulty === 'easy' ? 'success' : ($quiz->difficulty === 'medium' ? 'warning' : 'error') }}">
-                                    {{ ucfirst($quiz->difficulty) }}
-                                </div>
-                            @endif
-                            <div class="badge badge-outline">{{ $quiz->attempts->count() }} Attempts</div>
+                            <div class="badge badge-primary">{{ $quiz->questions->count() }} Questions</div>
+                            <div class="badge badge-secondary">{{ $quiz->attempts->count() }} Attempts</div>
                         </div>
                         <div class="flex items-center gap-2 text-sm text-base-content/70">
-                            <div class="avatar">
-                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                    {{ strtoupper(substr($quiz->author->name, 0, 1)) }}
-                                </div>
-                            </div>
+							<div class="avatar placeholder">
+								<div class="bg-neutral text-neutral-content w-8 rounded-full">
+								  <span class="text-sm">
+									{{ strtoupper(substr($quiz->author->name, 0, 2)) }}
+								  </span>
+								</div>
+							</div>
                             <span>Created by {{ $quiz->author->name }}</span>
                             <span>•</span>
                             <span>{{ $quiz->created_at->diffForHumans() }}</span>
@@ -54,6 +51,7 @@
         </div>
 
 		@php
+			// TODO: Move this to the controller
 			$totalAttempts = $quiz->attempts->count();
 			$totalQuestions = $quiz->questions->count();
 			$averageScore = round($quiz->attempts->avg('score'), 1);
@@ -110,7 +108,7 @@
 
 					<div class="join join-vertical w-full">
 						@foreach($quiz->questions as $question)
-							<details tabindex="0" class="collapse collapse-arrow join-item border border-base-300">
+							<details tabindex="0" class="collapse collapse-arrow join-item border border-base-200">
 								<summary class="collapse-title text-xl font-medium peer-checked:bg-secondary peer-checked:text-secondary-content">
 									<div class="flex items-center gap-3">
 										<span class="badge badge-primary">{{ $loop->iteration }}</span>
