@@ -5,7 +5,7 @@
 		<!-- Stats Overview -->
 		@include('quiz.attempts.partials.attempts-stats')
 
-		<!-- Attempts Table -->
+		<!-- Attempts Cards -->
 		@if($attempts->isEmpty())
 			<div class="card bg-base-100 shadow-xl">
 				<div class="card-body items-center text-center">

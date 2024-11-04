@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('quiz_id')
                 ->constrained('quizzes')
                 ->onDelete('cascade');
-            $table->integer('time_limit')->nullable(); // in seconds
+            $table->integer('time_limit')->nullable(); 
             $table->boolean('show_score')->default(true);
             $table->boolean('shuffle_options')->default(false);
             $table->boolean('shuffle_questions')->default(false);

@@ -9,8 +9,8 @@
 	$completionRate = $totalAttempts ?? round(($quiz->attempts->whereNotNull('completed_at')->count() / $totalAttempts) * 100, 1);
 @endphp
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-	<div class="stats shadow bg-base-100 border border-base-300">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+	<div class="stats shadow bg-base-200 border border-base-300">
 		<div class="stat">
 			<div class="stat-title">Average Score</div>
 			@if($totalAttempts)
@@ -22,7 +22,7 @@
 		</div>
 	</div>
 
-	<div class="stats shadow bg-base-100 border border-base-300">
+	<div class="stats shadow bg-base-200 border border-base-300">
 		<div class="stat">
 			<div class="stat-title">Highest Score</div>
 			@if($totalAttempts)
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="stats shadow bg-base-100 border border-base-300">
+	<div class="stats shadow bg-base-200 border border-base-300">
 		<div class="stat">
 			<div class="stat-title">Completion Rate</div>
 			@if($totalAttempts)
