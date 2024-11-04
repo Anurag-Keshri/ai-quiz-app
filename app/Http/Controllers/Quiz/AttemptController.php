@@ -146,6 +146,6 @@ class AttemptController extends Controller
 
         $attempt->delete();
 
-        return redirect()->route('quiz.attempts.index', ['quiz' => $quiz]);
+        return redirect()->back()->with('success', 'Attempt deleted successfully!');
     }
 }
