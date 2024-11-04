@@ -1,15 +1,24 @@
 @php
+	$myAttempts = $myAttempts ?? true;
 	$progress = round($attempt->score / $attempt->quiz->questions->count() * 100);
 	$progressColor = $progress <= 40 ? 'error' : 'success';
 @endphp
+
 <div class="card bg-base-100 shadow-xl border border-base-300">
 	<div class="card-body">
 		<!-- Header -->
 		<div class="flex justify-between items-start">
-			<div>
-				<h3 class="card-title">{{ $attempt->quiz->title }}</h3>
-				<p class="text-base-content/70 mt-1">{{ $attempt->quiz->description }}</p>
-			</div>
+			@if($myAttempts)
+				<div>
+					<h3 class="card-title">{{ $attempt->quiz->title }}</h3>
+					<p class="text-base-content/70 mt-1">{{ $attempt->quiz->description }}</p>
+				</div>
+			@else
+				<div>
+					<h3 class="card-title">{{ $attempt->user->name }}</h3>
+					<p class="text-base-content/70 mt-1">{{ $attempt->user->email }}</p>
+				</div>
+			@endif
 			<div class="radial-progress text-{{ $progressColor }}" style="--value:{{ $progress }};" role="progressbar">
 				{{ $progress }}%
 			</div>
@@ -54,10 +63,10 @@
 					<span class="hidden min-[400px]:block">Retake</span>
 				</a>
 				
-				<div class="divider divider-horizontal mx-2"></div>
 				
 				<!-- Delete Attempt -->
 				@if(Gate::allows('delete', $attempt))
+					<div class="divider divider-horizontal mx-2"></div>
 
 					<form action="{{ route('attempts.destroy', [$attempt->quiz, $attempt]) }}" 
 						method="POST" 

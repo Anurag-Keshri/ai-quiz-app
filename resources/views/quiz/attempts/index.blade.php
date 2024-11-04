@@ -17,7 +17,7 @@
 		@else
 			<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
 				@foreach($attempts as $attempt)
-					@include('quiz.attempts.partials.attempts-card', ['attempt' => $attempt])
+					@include('quiz.attempts.partials.attempts-card', ['attempt' => $attempt, 'myAttempts' => !isset($quiz)])
 				@endforeach
 			</div>
 		@endif

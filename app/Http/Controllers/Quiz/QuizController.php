@@ -112,7 +112,7 @@ class QuizController extends Controller
     {
 		Gate::authorize('view', $quiz);
 
-        $quiz->load(['questions.options', 'rules']);
+        $quiz->load(['questions.options', 'rules', 'attempts']);
         return view('quiz.quizzes.show', compact('quiz'));
     }
 

@@ -46,7 +46,7 @@ class AttemptPolicy
      */
     public function update(User $user, Attempt $attempt): bool
     {
-        return $user->id === $attempt->user_id;
+        return $user->id === $attempt->user_id || $user->id === $attempt->quiz->user_id;
     }
 
 
@@ -63,7 +63,7 @@ class AttemptPolicy
      */
     public function delete(User $user, Attempt $attempt): bool
     {
-        return $user->id === $attempt->user_id;
+        return $user->id === $attempt->user_id || $user->id === $attempt->quiz->user_id;
     }
 
     /**
