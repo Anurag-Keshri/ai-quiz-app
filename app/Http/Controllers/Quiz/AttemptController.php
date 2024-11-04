@@ -44,20 +44,6 @@ class AttemptController extends Controller
 		// Authorize the request
 		Gate::authorize('create', Attempt::class);
 
-		// If the quizRule has startdate, check if the current date is before the startdate
-		if ($quiz->rules->startdate && now()->isBefore($quiz->rules->startdate)) {
-			return redirect()
-				->route('landing')
-				->with('info', 'This quiz has not started yet.');
-		}
-
-		// If the quizRule has enddate, check if the current date is after the enddate
-		if ($quiz->rules->enddate && now()->isAfter($quiz->rules->enddate)) {
-			return redirect()
-				->route('landing')
-				->with('info', 'This quiz has ended.');
-		}
-
 		// If an attempt is not completed, redirect to the attempt
 		$attempt = $quiz->attempts()
 			->where('user_id', auth()->user()->id)
@@ -77,6 +63,20 @@ class AttemptController extends Controller
     {
 		// Authorize the request
 		Gate::authorize('create', Attempt::class);
+
+		// If the quizRule has startdate, check if the current date is before the startdate
+		if ($quiz->rules->startdate && now()->isBefore($quiz->rules->startdate)) {
+			return redirect()
+				->back()
+				->with('info', 'This quiz has not started yet.');
+		}
+
+		// If the quizRule has enddate, check if the current date is after the enddate
+		if ($quiz->rules->enddate && now()->isAfter($quiz->rules->enddate)) {
+			return redirect()
+				->back()
+				->with('info', 'This quiz has ended.');
+		}
 
         $attempt = $quiz->attempts()->create([
             'user_id' => $request->user()->id,

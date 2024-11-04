@@ -8,7 +8,15 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 class="text-2xl font-bold">{{ $quiz->title }}</h1>
-                    <p class="text-base-content/70">Ready to start the quiz?</p>
+                    <p class="text-base-content/70">
+                        @if($quiz->rules->end_date && now()->isAfter($quiz->rules->end_date))
+                            This quiz has ended
+                        @elseif($quiz->rules->start_date && now()->isBefore($quiz->rules->start_date))
+                            This quiz hasn't started yet
+                        @else
+                            Ready to start the quiz?
+                        @endif
+                    </p>
                 </div>
             </div>
 
@@ -46,17 +54,23 @@
                             </div>
                         </div>
 
-                        <!-- Passing Score -->
+                        <!-- Quiz Status -->
                         <div class="flex items-center gap-3">
                             <div class="p-3 bg-primary/10 rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <div>
-                                <div class="font-medium">Passing Score</div>
+                            <div class="flex flex-col justify-center">
+                                <div class="font-medium">Quiz Status</div>
                                 <div class="text-sm text-base-content/70">
-                                    {{ $quiz->rules->minimum_score ?? 'No' }} minimum score
+                                    @if($quiz->rules->end_date && now()->isAfter($quiz->rules->end_date))
+                                        <span class="text-sm badge badge-error">Ended</span>
+                                    @elseif($quiz->rules->start_date && now()->isBefore($quiz->rules->start_date))
+                                        <span class="text-sm badge badge-warning">Not Started</span>
+                                    @else
+                                        <span class="text-sm badge badge-success">Active</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -104,13 +118,21 @@
 
             <!-- Start Quiz Button -->
             <div class="flex justify-end">
-                <form method="POST" action="{{ route('attempts.store', $quiz) }}">
+                <form method="POST" action="{{ route('attempts.store', $quiz) }}" class="flex gap-2">
                     @csrf
-                    <button type="submit" 
-                            class="btn btn-primary"
-                            onclick="return confirm('Are you ready to start the quiz? The timer will begin immediately.')">
-                        Start Quiz
-                    </button>
+					<a href="{{ route('landing') }}" class="btn btn-outline">
+						Cancel
+					</a>
+					@if(
+						(!$quiz->rules->start_date || now()->isAfter($quiz->rules->start_date)) && 
+						(!$quiz->rules->end_date || now()->isBefore($quiz->rules->end_date))
+					)
+						<button type="submit" 
+							class="btn btn-primary"
+							onclick="return confirm('Are you ready to start the quiz? The timer will begin immediately.')">
+							Start Quiz
+                        </button>
+					@endif
                 </form>
             </div>
         </div>
