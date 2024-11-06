@@ -64,6 +64,18 @@ class AttemptController extends Controller
 		// Authorize the request
 		Gate::authorize('create', Attempt::class);
 
+		// If an attempt is not completed, redirect to the attempt
+		$attempt = $quiz->attempts()
+		->where('user_id', auth()->user()->id)
+		->whereNull('completed_at')
+		->first();
+
+		if ($attempt) {
+			return redirect()
+				->route('attempts.show', ['quiz' => $quiz, 'attempt' => $attempt])
+				->with('info', 'You have an attempt that is not completed. Redirecting to it now.');
+		}
+
 		// If the quizRule has startdate, check if the current date is before the startdate
 		if ($quiz->rules->startdate && now()->isBefore($quiz->rules->startdate)) {
 			return redirect()
@@ -113,20 +125,32 @@ class AttemptController extends Controller
                 ->with('error', 'This attempt has already been completed.');
         }
 
+		// Ensure that the quiz is not expired more than 60 seconds
+		if ($attempt->created_at->diffInSeconds(now()) < -60) {
+			$attempt->delete();
+			return redirect()
+				->route('landing')
+				->with('error', 'This attempt has expired.');
+		}
+		
         // Validate the incoming answers
-        $request->validate([
-            'answers' => ['required', 'array'],
-            'answers.*' => ['required', 'exists:options,id'],
-        ]);
+        $validated = $request->validate([
+            'answers' => ['array'],
+            'answers.*' => ['exists:options,id'],
+        ]);	
 
-        // Save answers
+		// Save answers
         foreach ($quiz->questions as $question) {
-            $selectedOptionId = $request->input("answers.{$question->id}");
-            
-            $attempt->answers()->create([
-				'attempt_id' => $attempt->id,
-                'option_id' => $selectedOptionId,
-            ]);
+			if ($request->has("answers.{$question->id}")) {
+				// If the option is set, use it
+				$selectedOptionId = $request->input("answers.{$question->id}");
+
+				$attempt->answers()->create([
+					'attempt_id' => $attempt->id,
+					'option_id' => $selectedOptionId,
+				]);
+			} 
+
         }
 
         // Mark attempt as completed
