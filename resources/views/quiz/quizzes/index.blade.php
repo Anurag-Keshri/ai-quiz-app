@@ -11,30 +11,36 @@
 @endphp
 
 @section('content')
-<div class="container mx-auto p-4">
+<div x-data="{myQuizzes: false}" @notify.window="myQuizzes = !$event.detail.myQuizzes" class="container mx-auto p-4">
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Quizzes</div>
-                <div class="stat-value">{{ $quizzes->count() }}</div>
-                <div class="stat-desc">Your created quizzes</div>
+                <div x-show="!myQuizzes" class="stat-value">{{ $quizzes->count() }}</div>
+                <div x-show="myQuizzes" class="stat-value">{{ auth()->user()->quizzes->count() }}</div>
+                <div x-show="myQuizzes" class="stat-desc">Your created quizzes</div>
+                <div x-show="!myQuizzes" class="stat-desc">All quizzes</div>
             </div>
         </div>
         
         <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Questions</div>
-                <div class="stat-value">{{ $questionCount }}</div>
-                <div class="stat-desc">Across all quizzes</div>
+                <div x-show="!myQuizzes" class="stat-value">{{ $questionCount }}</div>
+                <div x-show="myQuizzes" class="stat-value">{{ auth()->user()->quizzes->sum(function($quiz) { return $quiz->questions->count(); }) }}</div>
+                <div x-show="!myQuizzes" class="stat-desc">Across all quizzes</div>
+                <div x-show="myQuizzes" class="stat-desc">Your quizzes</div>
             </div>
         </div>
 
         <div class="stats shadow bg-base-100">
             <div class="stat">
                 <div class="stat-title">Total Attempts</div>
-                <div class="stat-value">{{ $attemptCount }}</div>
-                <div class="stat-desc">By all users</div>
+                <div x-show="!myQuizzes" class="stat-value">{{ $attemptCount }}</div>
+                <div x-show="myQuizzes" class="stat-value">{{ auth()->user()->attempts->count() }}</div>
+                <div x-show="!myQuizzes" class="stat-desc">By all users</div>
+                <div x-show="myQuizzes" class="stat-desc">Your attempts</div>
             </div>
         </div>
     </div>

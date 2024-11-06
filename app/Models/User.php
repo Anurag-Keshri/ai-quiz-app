@@ -52,9 +52,9 @@ class User extends Authenticatable
 		return $this->hasMany(Quiz::class);
 	}
 
-	// Define a relationship with the QuizAttempt model
-	public function quizAttempts()
+	// Define a relationship with the Attempt model
+	public function attempts()
 	{
-		return $this->hasMany(QuizAttempt::class);
+		return $this->hasMany(Attempt::class);
 	}
 }
