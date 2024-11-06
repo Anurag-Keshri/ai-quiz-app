@@ -12,7 +12,11 @@
 		<div class="flex justify-between items-start">
 			@if($myAttempts)
 				<div>
-					<h3 class="card-title">{{ $attempt->quiz->title }}</h3>
+					<h3 class="card-title">
+						<a href="{{ route('quizzes.show', $attempt->quiz) }}" class="link link-hover link-primary">
+							{{ $attempt->quiz->title }}
+						</a>
+					</h3>
 					<p class="text-base-content/70 mt-1">{{ $attempt->quiz->description }}</p>
 				</div>
 			@else
