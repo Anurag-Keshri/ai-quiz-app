@@ -15,7 +15,7 @@
     }
 @endphp
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 	<div class="stats shadow bg-base-100">
 		<div class="stat">
 			<div class="stat-title">Total Attempts</div>

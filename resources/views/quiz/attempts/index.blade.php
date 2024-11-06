@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-	<div class="container mx-auto p-4">
+	<div class="container mx-auto p-4 flex flex-col gap-8">
+		@if(isset($quiz))
+			<!-- Quiz Info -->
+			@include('quiz.quizzes.partials.info-card')
+		@endif
+
 		<!-- Stats Overview -->
 		@include('quiz.attempts.partials.attempts-stats')
 
