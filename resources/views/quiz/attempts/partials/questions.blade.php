@@ -11,6 +11,11 @@
 >
 	<form method="POST" action="{{ route('attempts.submit', ['quiz' => $quiz, 'attempt' => $attempt]) }}">
 		@csrf
+		@php
+			if (!$isAttemptCompleted && $attempt->quiz->rules->shuffle_questions) {
+				$questions = $questions->shuffle();
+			}
+		@endphp
 		@foreach ($questions as $index => $question)
 			@php $options = $question->options; @endphp
 			<div 
@@ -43,6 +48,11 @@
 					<div class="join-item card bg-base-100 shadow-xl border border-base-300">
 						<div class="card-body">
 							<div class="flex flex-wrap gap-8 items-center justify-center mx-20" x-data="{checkedOptionId: 0}">
+								@php
+									if ($attempt->quiz->rules->shuffle_options) {
+										$options = $options->shuffle();
+									}
+								@endphp
 								@foreach ($options as $index => $option)
 									<label>
 										<input 

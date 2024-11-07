@@ -91,12 +91,19 @@
 					$progressColor = $scorePercentage >= 66 ? 'success' : ($scorePercentage >= 33 ? 'warning' : 'error');
 				@endphp
 				<div class="flex flex-col justify-self-end items-end gap-4">
-					<div class="flex justify-center items-center rounded-full">
-						<p class="text-4xl font-bold">Score: {{ $score }} / {{ $questionsCount }}</p>
-					</div>
-					<div class="">
-						<progress class="progress w-64 progress-{{ $progressColor }}" value="{{ $scorePercentage }}" max="100"></progress>
-					</div>
+					@if($quiz->rules->show_score)
+						<div class="flex justify-center items-center rounded-full">
+							<p class="text-4xl font-bold">Score: {{ $score }} / {{ $questionsCount }}</p>
+						</div>
+						<div class="">
+							<progress class="progress w-64 progress-{{ $progressColor }}" value="{{ $scorePercentage }}" max="100"></progress>
+						</div>
+					@else
+						<div class="flex flex-col gap-4 justify-center items-center">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+							<h2 class="badge">Answers are hidden this quiz.</h2>
+						</div>
+					@endif
 				</div>
 			@endif
 		</div>
