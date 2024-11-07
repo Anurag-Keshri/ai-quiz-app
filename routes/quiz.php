@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Quiz\QuizController;
 use App\Http\Controllers\Quiz\QuizRuleController;
-use App\Http\Controllers\Quiz\QuestionController;
 use App\Http\Controllers\Quiz\AttemptController;
 
 Route::middleware('auth')->group(function () {
@@ -26,14 +25,14 @@ Route::middleware('auth')->group(function () {
 	});
 	
 	// Questions
-	Route::prefix('quizzes/{quiz}')->name('questions.')->group(function () {
-		Route::post('/questions', [QuestionController::class, 'store'])->name('store');
-		Route::get('/questions/create', [QuestionController::class, 'create'])->name('create');
-		Route::get('/questions/{question}', [QuestionController::class, 'show'])->name('show');
-		Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('update');
-		Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('destroy');
-		Route::get('/questions/{question}/edit', [QuestionController::class, 'edit'])->name('edit');
-	});
+	// Route::prefix('quizzes/{quiz}')->name('questions.')->group(function () {
+	// 	Route::post('/questions', [QuestionController::class, 'store'])->name('store');
+	// 	Route::get('/questions/create', [QuestionController::class, 'create'])->name('create');
+	// 	Route::get('/questions/{question}', [QuestionController::class, 'show'])->name('show');
+	// 	Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('update');
+	// 	Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('destroy');
+	// 	Route::get('/questions/{question}/edit', [QuestionController::class, 'edit'])->name('edit');
+	// });
 
 	// Attempts (Quiz Attempts)
 	Route::prefix('quizzes/{quiz}')->name('attempts.')->group(function () {
