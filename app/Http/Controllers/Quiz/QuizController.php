@@ -112,13 +112,33 @@ class QuizController extends Controller
     {
 		Gate::authorize('view', $quiz);
 
-        $quiz->load(['questions.options', 'rules', 'attempts']);
+		$quiz->load([
+			'questions' => function ($query) {
+				$query->orderBy('created_at', 'asc');
+			},
+			'questions.options' => function ($query) {
+				$query->orderBy('created_at', 'asc');
+			},
+			'rules',
+			'attempts'
+		]);
         return view('quiz.quizzes.show', compact('quiz'));
     }
 
     public function edit(Quiz $quiz)
     {
 		Gate::authorize('update', $quiz);
+
+		$quiz->load([
+			'questions' => function ($query) {
+				$query->orderBy('created_at', 'asc');
+			},
+			'questions.options' => function ($query) {
+				$query->orderBy('created_at', 'asc');
+			},
+			'rules',
+			'attempts'
+		]);
 
         return view('quiz.quizzes.edit', compact('quiz'));
     }
@@ -127,17 +147,24 @@ class QuizController extends Controller
     {
 		Gate::authorize('update', $quiz);
 
-        // Validate the basic quiz data
+		// Validate the basic quiz data
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
-            'questions' => 'array',
-            'questions.*.id' => 'nullable|exists:questions,id',
-            'questions.*.question_text' => 'required|string|max:1000',
-            'questions.*.options' => 'required|array|min:2',
-            'questions.*.options.*.id' => 'nullable|exists:options,id',
-            'questions.*.options.*.option_text' => 'required|string|max:255',
-            'questions.*.correct_option' => 'required|integer|min:0',
+			'title' => 'required|string|max:255',
+			'description' => 'required|string|max:1000',
+			'rules.time_limit' => 'integer|min:0',
+			'rules.start_date' => 'nullable|date',
+			'rules.end_date' => 'nullable|date|after:start_date',
+			'rules.show_score' => 'boolean',
+			'rules.shuffle_options' => 'boolean',
+			'rules.shuffle_questions' => 'boolean',
+			'rules.show_correct_answer' => 'boolean',
+			'questions' => 'array',
+			'questions.*' => 'array',
+			'questions.*.question_text' => 'required|string|max:1000',
+			'questions.*.options' => 'required|array|min:2',
+			'questions.*.options.*' => 'array',
+			'questions.*.options.*.option_text' => 'required|string|max:255',
+			'questions.*.options.*.is_correct' => 'integer|min:0',
         ]);
 
         try {
@@ -148,57 +175,51 @@ class QuizController extends Controller
                     'description' => $validated['description'],
                 ]);
 
-                // Get all current question IDs for later cleanup
-                $existingQuestionIds = $quiz->questions()->pluck('id')->toArray();
-                $updatedQuestionIds = [];
+				// Convert checkbox values to boolean
+				$validated['rules']['show_score'] = array_key_exists('show_score', $validated['rules']);
+				$validated['rules']['shuffle_options'] = array_key_exists('shuffle_options', $validated['rules']);
+				$validated['rules']['shuffle_questions'] = array_key_exists('shuffle_questions', $validated['rules']);
+				$validated['rules']['show_correct_answer'] = array_key_exists('show_correct_answer', $validated['rules']);
 
-                // Update or create questions and their options
-                foreach ($validated['questions'] as $questionData) {
-                    // Handle question
-                    $question = isset($questionData['id'])
-                        ? $quiz->questions()->findOrFail($questionData['id'])
-                        : $quiz->questions()->create(['question_text' => $questionData['question_text']]);
+				// Update quiz rules
+				$quiz->rules()->update(
+					[
+						'time_limit' => $validated['rules']['time_limit'],
+						'start_date' => $validated['rules']['start_date'],
+						'end_date' => $validated['rules']['end_date'],
+						'show_score' => $validated['rules']['show_score'],
+						'shuffle_options' => $validated['rules']['shuffle_options'],
+						'shuffle_questions' => $validated['rules']['shuffle_questions'],
+						'show_correct_answer' => $validated['rules']['show_correct_answer'],
+					]
+				);
 
-                    $question->update(['question_text' => $questionData['question_text']]);
-                    $updatedQuestionIds[] = $question->id;
+				// Update questions
+				foreach ($validated['questions'] as $questionId => $questionData) {
+					$question = Question::find($questionId);
+					$question->update([
+						'question_text' => $questionData['question_text'],
+					]);
 
-                    // Get existing option IDs for this question
-                    $existingOptionIds = $question->options()->pluck('id')->toArray();
-                    $updatedOptionIds = [];
+					// Update options
+					foreach ($question->options as $option) {
+						// Update option_text
+						$option->update([
+							'option_text' => $questionData['options'][$option->id]['option_text'],
+						]);
 
-                    // Handle options
-                    foreach ($questionData['options'] as $index => $optionData) {
-                        $isCorrect = $index == $questionData['correct_option'];
-                        
-                        $option = isset($optionData['id'])
-                            ? $question->options()->findOrFail($optionData['id'])
-                            : $question->options()->create([
-                                'option_text' => $optionData['option_text'],
-                                'is_correct' => $isCorrect,
-                            ]);
-
-                        $option->update([
-                            'option_text' => $optionData['option_text'],
-                            'is_correct' => $isCorrect,
-                        ]);
-
-                        $updatedOptionIds[] = $option->id;
-                    }
-
-                    // Delete options that weren't included in the update
-                    if (!empty($existingOptionIds)) {
-                        $question->options()
-                            ->whereNotIn('id', $updatedOptionIds)
-                            ->delete();
-                    }
-                }
-
-                // Delete questions that weren't included in the update
-                if (!empty($existingQuestionIds)) {
-                    $quiz->questions()
-                        ->whereNotIn('id', $updatedQuestionIds)
-                        ->delete();
-                }
+						// Update is_correct
+						if (array_key_exists('is_correct', $questionData['options'][$option->id])) {
+							$option->update([
+								'is_correct' => true,
+							]);
+						} else {
+							$option->update([
+								'is_correct' => false,
+							]);
+						}
+					}
+				}
             });
 
             return redirect()

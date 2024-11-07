@@ -1,4 +1,4 @@
-<div class="join join-vertical">
+<div class="join join-vertical rounded-2xl">
 	<!-- Quiz Info Card -->
 	<div class="card bg-base-100 shadow-xl border border-base-300 join-item">
 		<div class="card-body">

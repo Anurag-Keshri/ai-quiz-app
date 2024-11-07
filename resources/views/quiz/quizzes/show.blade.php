@@ -4,12 +4,12 @@
 <div class="min-h-screen bg-base-200">
     <div class="container mx-auto p-4 flex flex-col gap-6">
         <!-- Quiz Info Card -->
-		@include('quiz.quizzes.partials.info-card')
+		@include('quiz.quizzes.partials.info')
 		
 
 
 		<!-- Quiz Rules Card -->
-		@include('quiz.quizzes.partials.rules-card')
+		@include('quiz.quizzes.partials.rules')
 		
 		@if(Gate::allows('update', $quiz))
 

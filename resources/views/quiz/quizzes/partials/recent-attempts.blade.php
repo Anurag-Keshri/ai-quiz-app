@@ -17,7 +17,7 @@
 			</div>
 		@else
 			<!-- Stats Cards -->
-			@include('quiz.quizzes.partials.stats-cards')
+			@include('quiz.quizzes.partials.stats')
 
 			<!-- Recent Attempts Cards -->
 			<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 mt-4">

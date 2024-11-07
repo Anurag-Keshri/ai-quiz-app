@@ -102,17 +102,19 @@
 									@php 
 										$attemptAnswer = $attempt->answers->where('option_id', $option->id)->first();
 										$isCorrect = $attemptAnswer && $attemptAnswer->option->is_correct;
+										$successClass = 'bg-success/10 border border-success/20';
+										$errorClass = 'bg-error/10 border border-error/20';
 									@endphp
 									<!-- Option Card -->
 									<div class="card bg-base-200  shadow-xl border w-[14rem] h-[14rem]
 										@if ($option->id == $correctOptionId)
-											bg-success/10 border border-success/20
+											{{ $successClass }}
 										@endif
 
 										@if ($attemptAnswer && $isCorrect)
-											bg-success/10 border border-success/20
+											{{ $successClass }}
 										@elseif ($attemptAnswer)
-											bg-error/10 border border-error/20
+											{{ $errorClass }}
 										@else
 											border-base-300	
 										@endif
@@ -128,11 +130,15 @@
 														@endif
 													</span>
 													@if ($attemptAnswer)
+														@php 
+															$successBadgeClass = 'badge-success/10 border border-success/20';
+															$errorBadgeClass = 'badge-error/10 border border-error/20';
+														@endphp
 														<span class="badge badge-sm 
 															@if ($attemptAnswer->option->is_correct)
-																badge-success/10 border border-success/20
+																{{ $successBadgeClass }}
 															@else
-																badge-error/10 border border-error/20
+																{{ $errorBadgeClass }}
 															@endif
 														" x-show="$option->id == {{ $attemptAnswer->option_id }}">
 															Your answer
