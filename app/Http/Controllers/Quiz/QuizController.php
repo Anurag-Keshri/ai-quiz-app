@@ -104,7 +104,7 @@ class QuizController extends Controller
 			return redirect()->back()->with('error', 'Error creating quiz. ' . $e->getMessage());
 		}
 
-        return redirect()->route('quiz_rules.edit', $quiz)
+        return redirect()->route('quizzes.show', $quiz)
             ->with('success', 'Quiz created successfully. Please update the quiz rules.');
     }
 

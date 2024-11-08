@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Quiz\QuizController;
-use App\Http\Controllers\Quiz\QuizRuleController;
 use App\Http\Controllers\Quiz\AttemptController;
 
 Route::middleware('auth')->group(function () {
@@ -15,13 +14,6 @@ Route::middleware('auth')->group(function () {
 		Route::put('/{quiz}', [QuizController::class, 'update'])->name('update');
 		Route::delete('/{quiz}', [QuizController::class, 'destroy'])->name('destroy');
 		Route::get('/{quiz}/edit', [QuizController::class, 'edit'])->name('edit');
-	});
-
-	// Quiz Rules
-	Route::prefix('quizzes/{quiz}')->name('quiz_rules.')->group(function () {
-		Route::get('/rules', [QuizRuleController::class, 'show'])->name('show');
-		Route::put('/rules', [QuizRuleController::class, 'update'])->name('update');
-		Route::get('/rules/edit', [QuizRuleController::class, 'edit'])->name('edit');
 	});
 
 	// Attempts (Quiz Attempts)
