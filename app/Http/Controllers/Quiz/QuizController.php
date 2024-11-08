@@ -151,7 +151,7 @@ class QuizController extends Controller
         $validated = $request->validate([
 			'title' => 'required|string|max:255',
 			'description' => 'required|string|max:1000',
-			'rules.time_limit' => 'integer|min:0',
+			'rules.time_limit' => 'nullable|integer|min:0|max:720',
 			'rules.start_date' => 'nullable|date',
 			'rules.end_date' => 'nullable|date|after:start_date',
 			'rules.show_score' => 'boolean',

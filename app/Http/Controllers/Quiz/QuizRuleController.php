@@ -39,7 +39,7 @@ class QuizRuleController extends Controller
 
 		// Validate the request
         $validated = $request->validate([
-            'time_limit' => 'nullable|integer|min:1',
+            'time_limit' => 'nullable|integer|min:0|max:720',
             'show_score' => 'boolean',
             'shuffle_options' => 'boolean',
             'shuffle_questions' => 'boolean',
