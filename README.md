@@ -42,7 +42,7 @@ Follow these instructions to set up the project locally.
 3. **Backend Setup (API):**
 	- Clone the repository:
 	  ```bash
-	  git clone https://github.com/Anurag-Keshri/ai-quiz-app.git
+	  git clone https://github.com/Anurag-Keshri/ai-quiz-api.git
 	  ```
 	- Follow the instructions in the readme file to set up the API.
 
